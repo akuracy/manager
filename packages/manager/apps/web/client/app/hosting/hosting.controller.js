@@ -28,6 +28,9 @@ export default class {
     Alerter,
     Navigator,
     constants,
+    emailOptionIds,
+    emailOptionDetachInformation,
+    goToDetachEmail,
     User,
     HostingDatabase,
     HostingDomain,
@@ -52,6 +55,9 @@ export default class {
     this.Alerter = Alerter;
     this.Navigator = Navigator;
     this.constants = constants;
+    this.emailOptionIds = emailOptionIds;
+    this.emailOptionDetachInformation = emailOptionDetachInformation;
+    this.goToDetachEmail = goToDetachEmail;
     this.User = User;
     this.HostingDatabase = HostingDatabase;
     this.HostingDomain = HostingDomain;
@@ -71,6 +77,10 @@ export default class {
     this.$scope.edit = {
       active: false,
     };
+
+    this.$scope.emailOptionIds = this.emailOptionIds;
+    this.$scope.emailOptionDetachInformation = this.emailOptionDetachInformation;
+    this.$scope.goToDetachEmail = this.goToDetachEmail;
 
     this.$scope.stepPath = '';
     this.$scope.currentAction = null;
