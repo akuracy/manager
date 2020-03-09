@@ -15,6 +15,7 @@ import edit from './edit';
 import failoverIps from './failover-ips';
 import instances from './instances';
 import kubernetes from './kubernetes';
+import loadBalancer from './load-balancer';
 import sshKeys from './ssh-keys';
 import privateNetworks from './private-networks';
 import quota from './quota';
@@ -43,6 +44,7 @@ angular
     edit,
     failoverIps,
     instances,
+    loadBalancer,
     kubernetes,
     privateNetworks,
     quota,
