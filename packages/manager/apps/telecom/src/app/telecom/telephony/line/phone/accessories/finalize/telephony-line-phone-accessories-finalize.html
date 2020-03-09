@@ -1,28 +1,19 @@
 <div class="telecom-telephony-line-phone-accessories-finalize">
-    <div class="text-center" data-ng-if="AccessoriesFinalizeCtrl.loading.init">
+    <div class="text-center" data-ng-if="$ctrl.loading.init">
         <oui-spinner></oui-spinner>
     </div>
 
-    <form data-ng-if="!AccessoriesFinalizeCtrl.loading.init">
-        <div
-            class="alert alert-danger"
-            role="alert"
-            data-ng-if="AccessoriesFinalizeCtrl.error"
-        >
+    <form data-ng-if="!$ctrl.loading.init">
+        <div class="alert alert-danger" role="alert" data-ng-if="$ctrl.error">
             <p>
                 <span
                     data-translate="telephony_line_phone_accessories_finalize_error"
                 ></span>
-                <span
-                    data-ng-bind="AccessoriesFinalizeCtrl.error.data.message"
-                ></span>
+                <span data-ng-bind="$ctrl.error.data.message"></span>
             </p>
         </div>
 
-        <div
-            data-ng-if="!AccessoriesFinalizeCtrl.error"
-            class="widget-presentation"
-        >
+        <div data-ng-if="!$ctrl.error" class="widget-presentation">
             <h2
                 class="widget-presentation-title"
                 data-translate="telephony_line_phone_accessories_finalize_title"
@@ -41,8 +32,8 @@
                 <dd>
                     <a
                         target="_blank"
-                        data-ng-href="{{ AccessoriesFinalizeCtrl.order.url }}"
-                        data-ng-bind="AccessoriesFinalizeCtrl.order.orderId"
+                        data-ng-href="{{ $ctrl.order.url }}"
+                        data-ng-bind="$ctrl.order.orderId"
                     >
                     </a>
                 </dd>
@@ -52,7 +43,7 @@
                 ></dt>
                 <dd
                     class="text-price"
-                    data-ng-bind="AccessoriesFinalizeCtrl.order.prices.withoutTax.text"
+                    data-ng-bind="$ctrl.order.prices.withoutTax.text"
                 ></dd>
 
                 <dt
@@ -60,7 +51,7 @@
                 ></dt>
                 <dd
                     class="text-price"
-                    data-ng-bind="AccessoriesFinalizeCtrl.order.prices.withTax.text"
+                    data-ng-bind="$ctrl.order.prices.withTax.text"
                 ></dd>
             </dl>
         </div>

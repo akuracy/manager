@@ -1,408 +1,495 @@
-import drop from 'lodash/drop';
 import find from 'lodash/find';
 import flatten from 'lodash/flatten';
-import forEach from 'lodash/forEach';
 import head from 'lodash/head';
 import isArray from 'lodash/isArray';
-import isString from 'lodash/isString';
-import keys from 'lodash/keys';
 import map from 'lodash/map';
-import pick from 'lodash/pick';
 import remove from 'lodash/remove';
 import set from 'lodash/set';
+import sortBy from 'lodash/sortBy';
 import sum from 'lodash/sum';
 
-angular
-  .module('managerApp')
-  .controller('PackVoipLineActivationCtrl', function PackVoipLineActivationCtrl(
+import {
+  buildFramedObject,
+  removeDuplicateAddress,
+} from './pack-voipLine-activation.service';
+
+export default class PackVoipLineActivationCtrl {
+  /* @ngInject */
+  constructor(
     $scope,
-    $stateParams,
-    OvhApiPackXdsl,
-    OvhApiPackXdslVoipLine,
-    costs,
     $q,
     $translate,
+    costs,
+    OvhApiPackXdsl,
+    OvhApiPackXdslVoipLine,
     TucToastError,
   ) {
-    const self = this;
-    this.transporterCost = costs.voip.shipping.transporter.value;
+    this.$scope = $scope;
+    this.OvhApiPackXdsl = OvhApiPackXdsl;
+    this.OvhApiPackXdslVoipLine = OvhApiPackXdslVoipLine;
+    this.costs = costs;
+    this.$q = $q;
+    this.$translate = $translate;
+    this.TucToastError = TucToastError;
+  }
+
+  $onInit() {
+    this.transporterCost = this.costs.voip.shipping.transporter.value;
     this.canUncheckOrderablePhones = true;
 
-    /**
-     * Build the select object
-     * @param {Integer} count Number of available slots
-     */
-    this.buildSlotCount = function buildSlotCount(count) {
-      if (count > 1) {
-        self.orderCountSelect.push({
-          value: 0,
-          label: $translate.instant(
-            'telephony_activation_select_number_of_lines',
-          ),
-        });
-      }
-
-      for (let j = 0; j < count; j += 1) {
-        self.orderCountSelect.push({
-          value: j + 1,
-          label: j + 1,
-        });
-      }
-
-      if (self.orderCountSelect.length === 1) {
-        self.setOrderCount(1, true);
-      } else {
-        self.setOrderCount(0, true);
-      }
-    };
-
-    /**
-     * Load lines and hardware data
-     * @param {Integer} id Pack id
-     * @returns {Promise}
-     */
-    this.loadData = function loadData(id) {
-      self.loading = true;
-      return $q
-        .all([
-          OvhApiPackXdsl.v6().getServices({
-            packId: id,
-          }).$promise,
-          OvhApiPackXdslVoipLine.v6().getHardwares({
-            packId: id,
-          }).$promise,
-          OvhApiPackXdslVoipLine.v6().getShippingAddresses({
-            packId: id,
-          }).$promise,
-        ])
-        .finally(() => {
-          self.loading = false;
-        });
-    };
-
-    /**
-     * Build an array of large x n elements
-     * @param    {array} arrayData Input data (flat array)
-     * @param  {Integer} largeParam     Array large
-     * @param {function} callbackParam  Function to format data. if the function return false,
-     *                                  data are ignored
-     * @returns {Array}
-     */
-    this.buildFramedObject = function buildFramedObject(
-      arrayData,
-      largeParam,
-      callbackParam,
-    ) {
-      const framedData = [];
-      let localIndex = 0;
-      let callback = callbackParam;
-      let large = largeParam;
-      if (typeof large === 'function') {
-        callback = large;
-      }
-      if (typeof large === 'undefined' || typeof large === 'function') {
-        large = 2;
-      }
-      if (typeof callback === 'undefined') {
-        callback = (val) => val;
-      }
-      arrayData.forEach((data, index) => {
-        const computedData = callback(data, localIndex, index);
-        if (computedData !== false) {
-          if (framedData.length <= Math.floor(localIndex / large)) {
-            framedData[Math.floor(localIndex / large)] = [];
-          }
-          framedData[Math.floor(localIndex / 2)][localIndex % 2] = computedData;
-          localIndex += 1;
-        }
-      });
-      return framedData;
-    };
-
-    /**
-     * Check if the user still can uncheck the orderable phones.
-     * And keep coherence between the flag needHardware and the selected
-     * hardware.
-     * Aka: if not needed, hardware must be null.
-     */
-    this.checkIfStillCanUncheckOrderablePhones = function checkIfStillCanUncheckOrderablePhones() {
-      const uncheckedPhones = sum(
-        map(flatten(self.framedLines), (framedLine) => {
-          if (!framedLine.line.needHardware && framedLine.line.hardware) {
-            set(framedLine, 'line.hardware', null);
-          }
-
-          return framedLine.line.needHardware ? 0 : 1;
-        }),
-      );
-
-      self.canUncheckOrderablePhones =
-        uncheckedPhones < self.modem.linesOnModem;
-    };
-
-    /**
-     * Set the number of hardware to order
-     * @param {Integer} number Number of hardware to order
-     */
-    this.setOrderCount = function setOrderCount(number, isInitialSelection) {
-      if (typeof number !== 'undefined') {
-        self.orderCount = find(self.orderCountSelect, { value: number });
-      }
-
-      if (
-        !isInitialSelection &&
-        self.orderCountSelect[0] &&
-        self.orderCountSelect[0].value === 0
-      ) {
-        // remove the placeholder
-        self.orderCountSelect.shift();
-      }
-
-      self.modem.lines.forEach((line, index) => {
-        set(line, 'enabled', index < self.orderCount.value);
-      });
-
-      self.framedLines = self.buildFramedObject(
-        self.modem.lines,
-        2,
-        (line, localIndex) => {
-          if (!line.enabled) {
-            return false;
-          }
-          return {
-            line,
-            carouselIndex: 0,
-            availableHardwares: JSON.parse(JSON.stringify(self.hardwares)),
-            index: localIndex + 1,
-          };
-        },
-      );
-
-      self.checkIfStillCanUncheckOrderablePhones();
-    };
-
-    /**
-     * Remove Dupplicate address
-     * @param {array} data List of addresses
-     * @returns {array}
-     */
-    this.removeDuplicateAddress = function removeDuplicateAddress(dataParam) {
-      let sameAddress = true;
-      let data = dataParam;
-      forEach(
-        keys(
-          pick(data[0], [
-            'firstName',
-            'zipCode',
-            'cityName',
-            'lastName',
-            'address',
-            'countryCode',
-          ]),
-        ),
-        (key) => {
-          if (isString(data[0][key]) && isString(data[1][key])) {
-            if (data[0][key].toLowerCase() !== data[1][key].toLowerCase()) {
-              sameAddress = false;
-            }
-          } else if (data[0][key] !== data[1][key]) {
-            sameAddress = false;
-          }
-        },
-      );
-      if (sameAddress) {
-        data = drop(data, 1);
-      }
-      return data;
-    };
-
-    /**
-     * Check if all hardware are configured
-     * @returns {boolean} True if ready
-     */
-    this.isHardwareConfigured = function isHardwareConfigured() {
-      if (self.modem.lines) {
-        let ready = true;
-        self.modem.lines.forEach((line) => {
-          if (!line.isConfigured()) {
-            ready = false;
-          }
-        });
-        return ready;
-      }
-      return false;
-    };
-
-    /**
-     * Check if something needs to be shipped
-     * @returns {boolean} True if ready
-     */
-    this.isShipping = function isShipping() {
-      if (self.modem.lines) {
-        let shipping = false;
-        self.modem.lines.forEach((line) => {
-          if (line.isShipping()) {
-            shipping = true;
-          }
-        });
-        return shipping;
-      }
-      return true;
-    };
-
-    /**
-     * Check if transport is configured
-     * @returns {boolean} True if ready
-     */
-    this.isTransportConfigured = function isTransportConfigured() {
-      switch (self.shippingMode) {
-        case 'mondialRelay':
-          return !!self.mondialRelay;
-        case 'transporter':
-          return !!self.transporterAddress;
-        default:
-          return false;
-      }
-    };
-
-    this.getTransporter = function getTransporter() {
-      switch (self.shippingMode) {
-        case 'mondialRelay':
-          return {
-            mondialRelayId: self.mondialRelay.id,
-          };
-        case 'transporter':
-          return {
-            shippingId: self.transporterAddress,
-          };
-        default:
-          return {};
-      }
-    };
-
-    /**
-     * Check if the order is ready
-     * @returns {boolean}
-     */
-    this.isOrderReady = function isOrderReady() {
-      const needNoHardware = self.isHardwareConfigured() && !self.isShipping();
-      const needHardware =
-        self.isHardwareConfigured() &&
-        self.isShipping() &&
-        self.isTransportConfigured();
-      return needNoHardware || needHardware;
-    };
-
-    /**
-     * Launch a new Order
-     */
-    this.launchOrder = function launchOrder() {
-      self.orderPending = true;
-      const data = [];
-      self.modem.lines.forEach((line) => {
-        if (line.isShipping()) {
-          data.push(
-            angular.extend(
-              { hardwareName: line.hardware.name },
-              self.getTransporter(),
-            ),
-          );
-        } else if (line.enabled) {
-          data.push({ hardwareName: 'modem' });
-        }
-      });
-      OvhApiPackXdslVoipLine.Aapi()
-        .activate(
-          {
-            packId: $stateParams.packName,
-          },
-          { lines: data },
-        )
-        .$promise.then(
-          (order) => {
-            self.orderDone = true;
-            self.orderDetails = head(order.data);
-          },
-          (err) => {
-            self.orderDone = false;
-            self.orderError = err;
-            return new TucToastError(err);
-          },
-        )
-        .finally(() => {
-          self.orderPending = false;
-        });
-    };
-
-    /**
-     * Initialize the controller
-     */
-    this.init = function init() {
-      self.shippingMode = 'mondialRelay';
-      self.mondialRelay = null;
-      self.bill = {
-        deposit() {
-          let deposit = 0;
-          if (self.modem.lines) {
-            self.modem.lines.forEach((line) => {
-              if (line.enabled && line.hardware) {
-                deposit += line.hardware.deposit.value;
-              }
-            });
-          }
-          return deposit;
-        },
-        transportCost() {
-          return self.shippingMode === 'mondialRelay' || !self.isShipping()
-            ? 0
-            : costs.voip.shipping.transporter.value;
-        },
-        total() {
-          return this.deposit() + this.transportCost();
-        },
-      };
-      self.modem = {};
-      self.orderCountSelect = [];
-      self.framedLines = [];
-      self.loadData($stateParams.packName).then((data) => {
-        self.modem.availableSlots = find(data[0], { name: 'voipLine' });
-
-        // eslint-disable-next-line prefer-destructuring
-        self.hardwares = data[1];
-        const linesOnModems = remove(self.hardwares, { name: 'modem' });
-        if (linesOnModems && isArray(linesOnModems)) {
-          self.modem.linesOnModem = linesOnModems.length
-            ? linesOnModems[0].max
-            : 0;
-        }
-
-        self.modem.lines = [];
-        for (let i = 0; i < self.modem.availableSlots.available; i += 1) {
-          self.modem.lines.push({
-            hardware: null,
-            enabled: true,
-            needHardware: true,
-            isShipping() {
-              return !!this.needHardware && !!this.enabled;
-            },
-            isConfigured() {
-              return (
-                !this.enabled ||
-                !this.needHardware ||
-                (!!this.needHardware && !!this.enabled && !!this.hardware)
-              );
-            },
-          });
-        }
-
-        self.buildSlotCount(self.modem.availableSlots.available);
-
-        self.shippingAddresses = self.removeDuplicateAddress(data[2]);
-        self.framedShippingAddresses = self.buildFramedObject(
-          self.shippingAddresses,
-        );
-      }, TucToastError);
-    };
+    this.isFirstSelect = true;
 
     this.init();
-  });
+  }
+
+  /**
+   * Build the select object
+   * @param {Integer} count Number of available slots
+   */
+  buildSlotCount(count) {
+    if (count > 1) {
+      this.orderCountSelect.push({
+        value: 0,
+        label: this.$translate.instant(
+          'telephony_activation_select_number_of_lines',
+        ),
+      });
+    }
+
+    for (let j = 0; j < count; j += 1) {
+      this.orderCountSelect.push({
+        value: j + 1,
+        label: j + 1,
+      });
+    }
+
+    if (this.orderCountSelect.length === 1) {
+      this.setOrderCount(1, true);
+    } else {
+      this.setOrderCount(0, true);
+    }
+  }
+
+  /**
+   * Load lines and hardware data
+   * @param {Integer} id Pack id
+   * @returns {Promise}
+   */
+  loadData(id) {
+    this.loading = true;
+    return this.$q
+      .all([
+        this.OvhApiPackXdsl.v6().getServices({
+          packId: id,
+        }).$promise,
+        this.OvhApiPackXdslVoipLine.v6().getHardwares({
+          packId: id,
+        }).$promise,
+        this.OvhApiPackXdslVoipLine.v6().getShippingAddresses({
+          packId: id,
+        }).$promise,
+      ])
+      .finally(() => {
+        this.loading = false;
+      });
+  }
+
+  /**
+   * Check if the user still can uncheck the orderable phones.
+   * And keep coherence between the flag needHardware and the selected
+   * hardware.
+   * Aka: if not needed, hardware must be null.
+   */
+  checkIfStillCanUncheckOrderablePhones() {
+    const uncheckedPhones = sum(
+      map(flatten(this.framedLines), (framedLine) => {
+        if (!framedLine.line.needHardware && framedLine.line.hardware) {
+          set(framedLine, 'line.hardware', null);
+        }
+
+        return framedLine.line.needHardware ? 0 : 1;
+      }),
+    );
+
+    this.canUncheckOrderablePhones = uncheckedPhones < this.modem.linesOnModem;
+  }
+
+  /**
+   * Set the number of hardware to order
+   * @param {Integer} number Number of hardware to order
+   */
+  setOrderCount(number, isInitialSelection) {
+    this.selectedPhones = [];
+    if (typeof number !== 'undefined') {
+      this.orderCount = find(this.orderCountSelect, { value: number });
+    }
+
+    if (
+      !isInitialSelection &&
+      this.orderCountSelect[0] &&
+      this.orderCountSelect[0].value === 0
+    ) {
+      // remove the placeholder
+      this.orderCountSelect.shift();
+    }
+
+    this.modem.lines.forEach((line, index) => {
+      set(line, 'enabled', index < this.orderCount.value);
+    });
+
+    this.framedLines = buildFramedObject(
+      this.modem.lines,
+      2,
+      (line, localIndex) => {
+        if (!line.enabled) {
+          return false;
+        }
+        return {
+          line,
+          carouselIndex: 0,
+          availableHardwares: JSON.parse(JSON.stringify(this.hardwares)),
+          index: localIndex + 1,
+        };
+      },
+    );
+
+    this.spinnerExtremities = {
+      min: 0,
+      max: this.orderCount.value,
+    };
+    this.quantityMax = 0;
+
+    this.isFirstSelect = true;
+    this.checkIfStillCanUncheckOrderablePhones();
+  }
+
+  /**
+   * Check if all hardware are configured
+   * @returns {boolean} True if ready
+   */
+  isHardwareConfigured() {
+    if (this.modem.lines) {
+      let ready = true;
+      this.modem.lines.forEach((line) => {
+        if (!line.isConfigured()) {
+          ready = false;
+        }
+      });
+      return ready;
+    }
+    return false;
+  }
+
+  /**
+   * Check if something needs to be shipped
+   * @returns {boolean} True if ready
+   */
+  isShipping() {
+    if (this.selectedPhones) {
+      let shipping = false;
+      this.selectedPhones.forEach((line) => {
+        if (line.needShipping && !this.isSipOnly) {
+          shipping = true;
+        }
+      });
+      return shipping;
+    }
+    return true;
+  }
+
+  /**
+   * Check if transport is configured
+   * @returns {boolean} True if ready
+   */
+  isTransportConfigured() {
+    switch (this.shippingMode) {
+      case 'mondialRelay':
+        return !!this.mondialRelay;
+      case 'transporter':
+        return !!this.transporterAddress;
+      default:
+        return false;
+    }
+  }
+
+  getTransporter() {
+    switch (this.shippingMode) {
+      case 'mondialRelay':
+        return {
+          mondialRelayId: this.mondialRelay.id,
+        };
+      case 'transporter':
+        return {
+          shippingId: this.transporterAddress,
+        };
+      default:
+        return {};
+    }
+  }
+
+  /**
+   * Check if the order is ready
+   * @returns {boolean}
+   */
+  isOrderReady() {
+    let nbLinesConfigured = 0;
+    this.selectedPhones.forEach((line) => {
+      if (line) {
+        nbLinesConfigured += line.quantity;
+      }
+    });
+    const needHardware =
+      nbLinesConfigured === this.orderCount.value &&
+      this.isShipping() &&
+      this.isTransportConfigured();
+    const needNoHardware =
+      nbLinesConfigured === this.modem.linesOnModem && !this.isShipping();
+
+    return needNoHardware || needHardware;
+  }
+
+  /**
+   * Launch a new Order
+   */
+  launchOrder() {
+    this.orderPending = true;
+    const data = [];
+    this.selectedPhones.forEach((line) => {
+      if (line.needShipping) {
+        if (line) {
+          data.push(
+            angular.extend({ hardwareName: line.name }, this.getTransporter()),
+          );
+        }
+      } else if (line.name.includes('sipLine')) {
+        data.push({ hardwareName: 'modem' });
+      }
+    });
+    this.OvhApiPackXdslVoipLine.Aapi()
+      .activate(
+        {
+          packId: this.packName,
+        },
+        { lines: data },
+      )
+      .$promise.then(
+        (order) => {
+          this.orderDone = true;
+          this.orderDetails = head(order.data);
+        },
+        (err) => {
+          this.orderDone = false;
+          this.orderError = err;
+          return new this.TucToastError(err);
+        },
+      )
+      .finally(() => {
+        this.orderPending = false;
+      });
+  }
+
+  /**
+   * Initialize the controller
+   */
+  init() {
+    this.shippingMode = 'mondialRelay';
+    this.mondialRelay = null;
+    this.phoneBill = {
+      deposit: 0,
+      fees: 0,
+      transportCost: 0,
+      total: 0,
+    };
+    this.modem = {};
+    this.orderCountSelect = [];
+    this.framedLines = [];
+
+    this.phoneToOrder = null;
+    this.isSipOnly = false;
+
+    this.loadData(this.packName).then((data) => {
+      this.modem.availableSlots = find(data[0], { name: 'voipLine' });
+
+      // eslint-disable-next-line prefer-destructuring
+      this.hardwares = data[1];
+
+      // initialize brand list for tabs
+      this.initializeBrandList();
+
+      const linesOnModems = remove(this.hardwares, { name: 'modem' });
+      if (linesOnModems && isArray(linesOnModems)) {
+        // Add this choice to hardwares list
+        if (linesOnModems.length > 0) {
+          this.isSipLineAvailable = true;
+        } else {
+          this.isSipLineAvailable = false;
+        }
+
+        this.modem.linesOnModem = linesOnModems.length
+          ? linesOnModems[0].max
+          : 0;
+      }
+
+      this.selectedPhones = [];
+
+      // Set lines for modem
+      this.modem.lines = [];
+      for (let i = 0; i < this.modem.availableSlots.available; i += 1) {
+        this.modem.lines.push({
+          hardware: null,
+          enabled: true,
+          needHardware: true,
+          isShipping() {
+            return !!this.needHardware && !!this.enabled;
+          },
+          isConfigured() {
+            return (
+              !this.enabled ||
+              !this.needHardware ||
+              (!!this.needHardware && !!this.enabled && !!this.hardware)
+            );
+          },
+        });
+      }
+
+      this.buildSlotCount(this.modem.availableSlots.available);
+
+      this.shippingAddresses = removeDuplicateAddress(data[2]);
+      this.framedShippingAddresses = buildFramedObject(this.shippingAddresses);
+    }, this.TucToastError);
+  }
+
+  initializeBrandList() {
+    const brandList = ['All'];
+    if (this.hardwares.length) {
+      this.hardwares.forEach((offer) => {
+        let brand = offer.name.substring(0, offer.name.indexOf('.'));
+        if (brand) {
+          brand = brand.replace(/^./, brand[0].toUpperCase());
+          if (!brandList.includes(brand)) {
+            brandList.push(brand);
+          }
+        }
+      });
+    }
+    this.brandList = brandList;
+  }
+
+  filterByBrand(brand) {
+    const listFiltered = [];
+    if ('all'.includes(brand.toLowerCase())) {
+      this.phonesDisplayed = this.hardwares;
+    } else {
+      this.hardwares.forEach((offer) => {
+        if (offer.name.includes(brand.toLowerCase())) {
+          listFiltered.push(offer);
+        }
+      });
+      this.phonesDisplayed = listFiltered;
+    }
+  }
+
+  sortPriceAsc() {
+    this.phonesDisplayed = sortBy(this.hardwares, 'deposit.value');
+  }
+
+  sortPriceDesc() {
+    this.phonesDisplayed = sortBy(this.hardwares, 'deposit.value').reverse();
+  }
+
+  // Available only for 1 line to activate
+  selectPhone(phone) {
+    if (this.orderCount.value === 1) {
+      for (let i = 0; i < this.orderCount.value; i += 1) {
+        const line = phone;
+        line.quantity = 1;
+        this.selectedPhones.push(line);
+      }
+      this.updatePhoneBill();
+    }
+    this.selectedPhone = this.phoneToOrder;
+  }
+
+  updateOrderTotal(quantity, phone) {
+    this.errorQuantity = false;
+
+    if (this.selectedPhones.length === 0 && quantity > 0) {
+      const line = phone;
+      line.quantity = quantity;
+      this.selectedPhones.push(line);
+    } else {
+      let notFound = true;
+      this.selectedPhones.forEach((select) => {
+        const updated = select;
+        if (updated.name === phone.name) {
+          updated.quantity = quantity;
+          notFound = false;
+        }
+        return updated;
+      });
+      if (notFound) {
+        const line = phone;
+        line.quantity = quantity;
+        this.selectedPhones.push(line);
+      }
+    }
+
+    this.updatePhoneBill();
+
+    // Check quantity
+    let q = 0;
+    this.selectedPhones.forEach((line) => {
+      if (line) {
+        q += line.quantity;
+      }
+    });
+    if (q > this.orderCount.value) {
+      this.errorQuantity = true;
+    }
+  }
+
+  updateShipping() {
+    this.updatePhoneBill();
+  }
+
+  updatePhoneBill() {
+    let deposit = 0;
+    if (this.selectedPhones && this.selectedPhones.length > 0) {
+      this.selectedPhones.forEach((line) => {
+        deposit += line.deposit.value * line.quantity;
+      });
+    }
+    let fees = 0;
+    if (this.selectedPhones && this.selectedPhones.length > 0) {
+      this.selectedPhones.forEach((line) => {
+        if (line.fees) {
+          fees += line.fees.value * line.quantity;
+        }
+      });
+    }
+    const transportCost =
+      this.shippingMode === 'mondialRelay' || !this.isShipping()
+        ? 0
+        : this.costs.voip.shipping.transporter.value;
+
+    const total = deposit + fees + transportCost;
+    this.phoneBill = {
+      deposit,
+      fees,
+      transportCost,
+      total,
+    };
+  }
+
+  selectSipLineWithoutPhone() {
+    if (this.orderCount.value === 1) {
+      for (let i = 0; i < this.orderCount.value; i += 1) {
+        const line = this.modem.lines[i];
+        line.needHardware = false;
+        line.isShipping = false;
+      }
+      this.isSipOnly = true;
+    }
+    this.checkIfStillCanUncheckOrderablePhones();
+  }
+}

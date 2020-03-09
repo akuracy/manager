@@ -3,5 +3,5 @@ import routing from './telephony-line-phone-attach.routing';
 
 angular
   .module('managerApp')
-  .component('telephonyLinePhoneOrderAttach', component)
+  .component('telephonyLinePhoneAttach', component)
   .config(routing);

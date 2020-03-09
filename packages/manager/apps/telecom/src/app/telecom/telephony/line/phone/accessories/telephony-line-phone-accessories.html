@@ -1,0 +1,36 @@
+<section class="telecom-telephony-line-phone-accessories">
+    <header>
+        <tuc-section-back-link
+            data-tuc-section-back-link-to-state="telecom.telephony.billingAccount.line.phone"
+            data-tuc-section-back-link-title="{{ 'telephony_group_line_phone_section_back_link' | translate }}"
+        >
+        </tuc-section-back-link>
+        <h1 data-translate="telephony_line_phone_accessories_title"></h1>
+    </header>
+
+    <div class="text-center" data-ng-if="$ctrl.loading.init">
+        <oui-spinner></oui-spinner>
+    </div>
+
+    <tuc-toast-message></tuc-toast-message>
+
+    <div data-ng-if="!$ctrl.loading.init" class="telecom-section-content">
+        <div data-ng-if="$ctrl.process.currentView === 'choice'">
+            <telephony-line-phone-accessories-choice
+                phone="$ctrl.phone"
+            ></telephony-line-phone-accessories-choice>
+        </div>
+
+        <div data-ng-if="$ctrl.process.currentView === 'shipping'">
+            <telephony-line-phone-accessories-shipping></telephony-line-phone-accessories-shipping>
+        </div>
+
+        <div data-ng-if="$ctrl.process.currentView === 'resume'">
+            <telephony-line-phone-accessories-resume></telephony-line-phone-accessories-resume>
+        </div>
+
+        <div data-ng-if="$ctrl.process.currentView === 'finalize'">
+            <telephony-line-phone-accessories-finalize></telephony-line-phone-accessories-finalize>
+        </div>
+    </div>
+</section>

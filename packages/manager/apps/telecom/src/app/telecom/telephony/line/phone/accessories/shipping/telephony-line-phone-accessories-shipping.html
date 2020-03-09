@@ -1,16 +1,15 @@
 <div class="telecom-telephony-line-phone-accessories-shipping">
-    <div class="text-center" data-ng-if="AccessoriesShippingCtrl.loading.init">
+    <div class="text-center" data-ng-if="$ctrl.loading.init">
         <oui-spinner></oui-spinner>
     </div>
 
-    <div class="row" data-ng-show="!AccessoriesShippingCtrl.loading.init">
-        <div class="col-xs-12 col-md-6">
-            <div class="widget-presentation">
-                <h2
-                    class="widget-presentation-title"
-                    data-translate="telephony_line_phone_accessories_shipping_title"
-                ></h2>
-
+    <div class="widget-presentation">
+        <h2
+            class="widget-presentation-title"
+            data-translate="telephony_line_phone_accessories_shipping_title"
+        ></h2>
+        <div class="row" data-ng-show="!$ctrl.loading.init">
+            <div class="col-xs-12 col-md-6">
                 <!-- CONTACT CHOICE -->
                 <div class="contact-choice">
                     <h3
@@ -19,9 +18,9 @@
                     ></h3>
 
                     <ovh-contact
-                        data-ng-model="AccessoriesShippingCtrl.process.shipping.contact"
-                        data-ovh-contact-choice-options="AccessoriesShippingCtrl.contactChoiceOptions"
-                        data-ovh-contact-init-deferred="AccessoriesShippingCtrl.contactDeferred"
+                        data-ng-model="$ctrl.process.shipping.contact"
+                        data-ovh-contact-choice-options="$ctrl.contactChoiceOptions"
+                        data-ovh-contact-init-deferred="$ctrl.contactDeferred"
                     >
                         <oui-spinner></oui-spinner>
                     </ovh-contact>
@@ -31,7 +30,7 @@
                 <!-- SHIPPING MODE CHOICE -->
                 <div
                     class="shipping-choice mt-3"
-                    data-ng-if="!AccessoriesShippingCtrl.process.shipping.contact.inEdition && !AccessoriesShippingCtrl.loading.init"
+                    data-ng-if="!$ctrl.process.shipping.contact.inEdition && !$ctrl.loading.init"
                 >
                     <h3
                         data-translate="telephony_line_phone_accessories_shipping_mode"
@@ -39,31 +38,34 @@
                     ></h3>
 
                     <tuc-shipping-mode-selection
-                        data-ng-model="AccessoriesShippingCtrl.process.shipping.mode"
-                        data-tuc-shipping-mode-selection-relay="AccessoriesShippingCtrl.process.shipping.relay"
-                        data-tuc-shipping-mode-selection-options="AccessoriesShippingCtrl.shippingOptions"
+                        data-ng-model="$ctrl.process.shipping.mode"
+                        data-tuc-shipping-mode-selection-relay="$ctrl.process.shipping.relay"
+                        data-tuc-shipping-mode-selection-options="$ctrl.shippingOptions"
                     >
                     </tuc-shipping-mode-selection>
                 </div>
                 <!-- SHIPPING MODE CHOICE -->
 
+                <br />
+                <hr class="oui-horizontal-line_dark" />
+
                 <form
-                    data-ng-if="!AccessoriesShippingCtrl.process.shipping.contact.inEdition"
-                    data-ng-submit="AccessoriesShippingCtrl.process.currentView = 'resume'"
+                    data-ng-if="!$ctrl.process.shipping.contact.inEdition"
+                    data-ng-submit="$ctrl.process.currentView = 'resume'"
                 >
                     <div class="footer-button-container clearfix mt-3 mb-4">
                         <button
                             type="submit"
                             class="btn btn-primary"
                             data-translate="telephony_line_phone_accessories_shipping_validate"
-                            data-ng-disabled="(AccessoriesShippingCtrl.process.shipping.mode === 'mondialRelay' && !AccessoriesShippingCtrl.process.shipping.relay) || !AccessoriesShippingCtrl.process.shipping.contact"
+                            data-ng-disabled="($ctrl.process.shipping.mode === 'mondialRelay' && !$ctrl.process.shipping.relay) || !$ctrl.process.shipping.contact"
                         ></button>
 
                         <button
                             type="reset"
                             class="btn btn-default"
                             data-translate="telephony_line_phone_accessories_previous"
-                            data-ng-click="AccessoriesShippingCtrl.process.currentView = 'choice'"
+                            data-ng-click="$ctrl.process.currentView = 'choice'"
                         ></button>
                     </div>
                 </form>
