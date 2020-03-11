@@ -15,7 +15,7 @@
             data-ng-if="($ctrl.phoneOffers.length > 1 || $ctrl.merchandise.length)"
         >
             <!-- Define filters -->
-            <oui-dropdown>
+            <oui-dropdown class="d-flex justify-content-end">
                 <oui-dropdown-trigger
                     text="{{ ::'telephony_line_phone_filter_price' | translate }}"
                 >
@@ -88,12 +88,15 @@
                                     variant="light"
                                     data-value="phone.brand"
                                 >
-                                    <div>{{phone.description}}</div>
+                                    <div>
+                                        <span
+                                            data-ng-bind="phone.description"
+                                        ></span>
+                                    </div>
                                     <div class="thumbnail">
                                         <img
                                             data-ng-if="phone.img"
-                                            alt=""
-                                            data-ng-alt="{{phone.description}}"
+                                            alt="{{phone.description}}"
                                             data-ng-src="{{phone.img}}"
                                         />
                                         <span
@@ -106,15 +109,17 @@
                                             <span
                                                 data-translate="telephony_line_phone_deposit"
                                             ></span>
-                                            <span>{{phone.price.text}}</span>
+                                            <span
+                                                data-ng-bind="phone.price.text"
+                                            ></span>
                                         </div>
                                         <div class="text-center oui-label">
                                             <span
-                                                >{{phone.setupFees.description}}</span
-                                            >
+                                                data-ng-bind="phone.setupFees.description"
+                                            ></span>
                                             <span
-                                                >{{phone.setupFees.price.text}}</span
-                                            >
+                                                data-ng-bind="phone.setupFees.price.text"
+                                            ></span>
                                         </div>
                                         <div
                                             class="text-center oui-label"
@@ -123,6 +128,7 @@
                                             <a
                                                 data-ng-href="{{phone.url}}"
                                                 target="_blank"
+                                                rel="noopener"
                                             >
                                                 <span
                                                     data-translate="telephony_line_phone_detail_link"
@@ -149,8 +155,7 @@
                 ></p>
             </div>
 
-            <br />
-            <hr class="oui-horizontal-line_dark" />
+            <hr class="oui-horizontal-line_dark mt-3" />
 
             <div class="mt-3 mb-4">
                 <button

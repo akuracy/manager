@@ -1,11 +1,11 @@
-import sortBy from 'lodash/sortBy';
-import map from 'lodash/map';
-import forEach from 'lodash/forEach';
-import set from 'lodash/set';
-import upperFirst from 'lodash/upperFirst';
-import head from 'lodash/head';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
+import forEach from 'lodash/forEach';
+import head from 'lodash/head';
+import map from 'lodash/map';
+import orderBy from 'lodash/orderBy';
+import set from 'lodash/set';
+import upperFirst from 'lodash/upperFirst';
 
 import { TELEPHONY_LINE_PHONE_CHOICE } from './telephony-line-phone-order-choice.constant';
 import initializeBrandList from './telephony-line-phone-order-choice.service';
@@ -101,25 +101,21 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
   }
 
   filterByBrand(brand) {
-    const listFiltered = [];
     if ('all'.includes(brand.toLowerCase())) {
       this.phonesDisplayed = this.phoneOffers;
     } else {
-      this.phoneOffers.forEach((offer) => {
-        if (offer.brand.includes(brand.toLowerCase())) {
-          listFiltered.push(offer);
-        }
-      });
-      this.phonesDisplayed = listFiltered;
+      this.phonesDisplayed = this.phoneOffers.filter((offer) =>
+        offer.name.includes(brand.toLowerCase()),
+      );
     }
   }
 
   sortPriceAsc() {
-    this.phonesDisplayed = sortBy(this.phoneOffers, 'price.value');
+    this.phonesDisplayed = orderBy(this.phoneOffers, 'price.value', 'asc');
   }
 
   sortPriceDesc() {
-    this.phonesDisplayed = sortBy(this.phoneOffers, 'price.value').reverse();
+    this.phonesDisplayed = orderBy(this.phoneOffers, 'price.value', 'desc');
   }
 
   updatePhones() {

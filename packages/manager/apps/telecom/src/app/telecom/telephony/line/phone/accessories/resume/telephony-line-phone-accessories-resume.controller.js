@@ -20,14 +20,6 @@ export default class TelecomTelephonyLinePhoneAccessoriesResumeCtrl {
       init: false,
     };
 
-    this.init();
-  }
-
-  /*= =====================================
-    =            INITIALIZATION            =
-    ====================================== */
-
-  init() {
     this.loading.init = true;
     this.process = this.TucTelephonyAccessoriesOrderProcess.getOrderProcess();
 
@@ -37,7 +29,7 @@ export default class TelecomTelephonyLinePhoneAccessoriesResumeCtrl {
           remove(
             order.details,
             (detail) =>
-              ['SPECIAL', 'MUTE'].indexOf(detail.detailType) > -1 ||
+              ['SPECIAL', 'MUTE'].includes(detail.detailType) ||
               (isEqual(detail.detailType, 'DELIVERY') &&
                 detail.totalPrice.value === 0),
           );
@@ -53,6 +45,4 @@ export default class TelecomTelephonyLinePhoneAccessoriesResumeCtrl {
         this.loading.init = false;
       });
   }
-
-  /* -----  End of INITIALIZATION  ------*/
 }

@@ -1,8 +1,8 @@
 <div class="telecom-pack-voipLine-activation">
     <header>
-        <tuc-section-back-link
-            data-tuc-section-back-link-to-state="telecom.packs.pack"
-        ></tuc-section-back-link>
+        <oui-back-button data-ui-sref="telecom.packs.pack">
+            <span data-translate="telephony_activation_return"></span>
+        </oui-back-button>
         <h1 data-translate="telefony_activation_add_line_title"></h1>
     </header>
 
@@ -89,14 +89,12 @@
                         ></h3>
                     </header>
 
-                    <div>
-                        <div
-                            data-translate="telephony_activation_choice_intro"
-                        ></div>
-                        <div
-                            data-translate="telephony_activation_choice_intro_2"
-                        ></div>
-                    </div>
+                    <div
+                        data-translate="telephony_activation_choice_intro"
+                    ></div>
+                    <div
+                        data-translate="telephony_activation_choice_intro_2"
+                    ></div>
 
                     <div class="text-center" data-ng-if="$ctrl.loading">
                         <oui-spinner></oui-spinner>
@@ -114,7 +112,7 @@
                             </oui-message>
 
                             <!-- Define filters -->
-                            <oui-dropdown>
+                            <oui-dropdown class="d-flex justify-content-end">
                                 <oui-dropdown-trigger
                                     text="{{ ::'telephony_activation_choice_filter_price' | translate }}"
                                 >
@@ -213,8 +211,8 @@
                                                                 data-translate="telephony_activation_choice_deposit"
                                                             ></span>
                                                             <span
-                                                                >{{phone.deposit.text}}</span
-                                                            >
+                                                                data-ng-bind="phone.deposit.text"
+                                                            ></span>
                                                         </div>
                                                         <div
                                                             class="text-center oui-label"
@@ -224,8 +222,8 @@
                                                                 data-translate="telephony_activation_choice_setup_fees"
                                                             ></span>
                                                             <span
-                                                                >{{phone.fees.text}}</span
-                                                            >
+                                                                data-ng-bind="phone.fees.text"
+                                                            ></span>
                                                         </div>
                                                         <div
                                                             class="text-center oui-label"
@@ -286,7 +284,7 @@
                             <div class="col">
                                 <oui-radio-group
                                     data-model="$ctrl.shippingMode"
-                                    data-on-change="$ctrl.updateShipping()"
+                                    data-on-change="$ctrl.updatePhoneBill()"
                                 >
                                     <oui-radio data-value="'mondialRelay'">
                                         <span
@@ -296,7 +294,7 @@
                                     <oui-radio data-value="'transporter'">
                                         <span
                                             data-translate="telephony_activation_shipping_transporter_label"
-                                            data-translate-values="{cost:$ctrl.transporterCost}"
+                                            data-translate-values="{cost:$ctrl.transporterCost, currency: $ctrl.transporterCurrency}"
                                         ></span>
                                     </oui-radio>
                                 </oui-radio-group>

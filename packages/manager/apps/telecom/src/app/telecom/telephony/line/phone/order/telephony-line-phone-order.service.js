@@ -2,6 +2,7 @@ import filter from 'lodash/filter';
 import get from 'lodash/get';
 import groupBy from 'lodash/groupBy';
 import head from 'lodash/head';
+import includes from 'lodash/includes';
 import map from 'lodash/map';
 
 export default function filterContact(contacts) {
@@ -27,6 +28,6 @@ export default function filterContact(contacts) {
     ),
     (contact) =>
       get(contact, 'address') &&
-      ['BE', 'FR', 'CH'].indexOf(contact.address.country) > -1,
+      includes(['BE', 'FR', 'CH'], contact.address.country),
   );
 }

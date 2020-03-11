@@ -30,66 +30,32 @@ export default class TelephonyLinePhoneAccessoriesCtrl {
     this.loading.init = true;
     this.TelephonyMediator.getGroup(this.billingAccount)
       .then((group) => {
+        this.process = this.TucTelephonyAccessoriesOrderProcess.init(
+          this.billingAccount,
+        );
         this.line = group.getLine(this.serviceName);
-      })
-      .then(() =>
-        this.OvhApiTelephony.Line()
+        return this.OvhApiTelephony.Line()
           .v6()
           .get({
             billingAccount: this.line.billingAccount,
             serviceName: this.line.serviceName,
-          })
-          .$promise.then((result) => {
-            assign(
-              this.line,
-              { getPublicOffer: result.getPublicOffer },
-              {
-                isAttachedToOtherLinesPhone: result.isAttachedToOtherLinesPhone,
-              },
-            );
-          }),
-      )
-      .then(() => this.line.hasPendingOfferTasks())
-      .then(() => {
-        return this.line.getPhone();
+          }).$promise;
       })
+      .then((result) => {
+        assign(
+          this.line,
+          { getPublicOffer: result.getPublicOffer },
+          {
+            isAttachedToOtherLinesPhone: result.isAttachedToOtherLinesPhone,
+          },
+        );
+      })
+      .then(() => this.line.hasPendingOfferTasks())
+      .then(() => this.line.getPhone())
       .then((phone) => {
         this.phone = phone;
       })
       .catch((err) => this.TucToast.error(err))
-      .finally(() => {
-        this.loading.init = false;
-      });
-
-    this.init();
-  }
-
-  /*= =====================================
-    =            INITIALIZATION            =
-    ====================================== */
-
-  init() {
-    this.loading.init = true;
-
-    return this.TelephonyMediator.getGroup(this.billingAccount)
-      .then(
-        () => {
-          this.process = this.TucTelephonyAccessoriesOrderProcess.init(
-            this.billingAccount,
-          );
-        },
-        (error) => {
-          this.TucToast.error(
-            [
-              this.$translate.instant(
-                'telephony_line_phone_accessories_load_error',
-              ),
-              (error.data && error.data.message) || '',
-            ].join(' '),
-          );
-          return this.$q.error(error);
-        },
-      )
       .finally(() => {
         this.loading.init = false;
         return this.atInternet.trackPage({
@@ -100,5 +66,4 @@ export default class TelephonyLinePhoneAccessoriesCtrl {
         });
       });
   }
-  /* -----  End of INITIALIZATION  ------*/
 }

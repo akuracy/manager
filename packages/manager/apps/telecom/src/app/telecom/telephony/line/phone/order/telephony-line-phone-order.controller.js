@@ -28,67 +28,6 @@ export default class TelecomTelephonyLinePhoneOrderCtrl {
   }
 
   $onInit() {
-    // this.rmaStatusUrl = this.TelephonyMediator.getV6ToV4RedirectionUrl(
-    //   'line.line_sav_rma_status',
-    // );
-
-    this.init();
-
-    /* Event to go to shipping view */
-    this.$scope.$on('phoneSelected', (event, phone) => {
-      this.orderStep = 'shipping';
-      this.order.phone = phone;
-    });
-
-    /* Event to go back to phone view from shipping view */
-    this.$scope.$on('hardwareFromShipping', () => {
-      this.orderStep = 'hardware';
-    });
-
-    /* Event to go to summary view from shipping view */
-    this.$scope.$on('summaryFromShipping', (event, order) => {
-      this.orderStep = 'summary';
-      this.order = order;
-    });
-
-    /* Event to go back to shipping view from summary view */
-    this.$scope.$on('shippingFromSummary', (event, order) => {
-      this.orderStep = 'shipping';
-      this.order = order;
-    });
-
-    /* Event to submit order from summary view */
-    this.$scope.$on('submitOrder', (event, order) => {
-      this.order = order;
-      this.submitOrder();
-    });
-
-    /* Event to return phone */
-    this.$scope.$on('returnPhone', () => {
-      this.orderStep = 'returnOnly';
-    });
-  }
-
-  fetchOrder(order) {
-    const params = {
-      serviceName: this.serviceName,
-      hardware: order.phone,
-      retractation: order.retract,
-      shippingContactId: order.contact.id,
-    };
-    if (get(order, 'shipping.mode') === 'mondialRelay') {
-      params.mondialRelayId = order.shipping.relay.id;
-    }
-    this.isFetchingOrder = true;
-    return this.OvhApiOrder.Telephony()
-      .v6()
-      .getHardware(params)
-      .$promise.finally(() => {
-        this.isFetchingOrder = false;
-      });
-  }
-
-  init() {
     this.orderStep = 'hardware';
 
     this.order = {
@@ -183,6 +122,59 @@ export default class TelecomTelephonyLinePhoneOrderCtrl {
           break;
       }
     });
+
+    /* Event to go to shipping view */
+    this.$scope.$on('phoneSelected', (event, phone) => {
+      this.orderStep = 'shipping';
+      this.order.phone = phone;
+    });
+
+    /* Event to go back to phone view from shipping view */
+    this.$scope.$on('hardwareFromShipping', () => {
+      this.orderStep = 'hardware';
+    });
+
+    /* Event to go to summary view from shipping view */
+    this.$scope.$on('summaryFromShipping', (event, order) => {
+      this.orderStep = 'summary';
+      this.order = order;
+    });
+
+    /* Event to go back to shipping view from summary view */
+    this.$scope.$on('shippingFromSummary', (event, order) => {
+      this.orderStep = 'shipping';
+      this.order = order;
+    });
+
+    /* Event to submit order from summary view */
+    this.$scope.$on('submitOrder', (event, order) => {
+      this.order = order;
+      this.submitOrder();
+    });
+
+    /* Event to return phone */
+    this.$scope.$on('returnPhone', () => {
+      this.orderStep = 'returnOnly';
+    });
+  }
+
+  fetchOrder(order) {
+    const params = {
+      serviceName: this.serviceName,
+      hardware: order.phone,
+      retractation: order.retract,
+      shippingContactId: order.contact.id,
+    };
+    if (get(order, 'shipping.mode') === 'mondialRelay') {
+      params.mondialRelayId = order.shipping.relay.id;
+    }
+    this.isFetchingOrder = true;
+    return this.OvhApiOrder.Telephony()
+      .v6()
+      .getHardware(params)
+      .$promise.finally(() => {
+        this.isFetchingOrder = false;
+      });
   }
 
   submitPhoneReturn() {

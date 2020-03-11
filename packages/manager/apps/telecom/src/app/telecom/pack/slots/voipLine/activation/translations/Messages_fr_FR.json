@@ -8,10 +8,10 @@
   "telefony_activation_success_validation": "Votre demande a bien été prise en compte",
   "telefony_activation_an_error_ocurred": "Une erreur est survenue lors de la création de votre ligne",
   "telephony_activation_shipping_address_label": "Choisissez l’adresse et le mode de livraison de votre téléphone",
-  "telephony_activation_shipping_transporter_label": "Livraison par transporteur (+ {{cost}}€ HT) sous 24h (après envoi)",
+  "telephony_activation_shipping_transporter_label": "Livraison par transporteur (+ {{cost}}{{currency}} HT) sous 24h (après envoi)",
   "telephony_activation_shipping_relay_label": "Livraison gratuite en point Mondial Relay sous 48h (après envoi)",
-  "telephony_activation_shipping_mode": "Mode de livraison:",
-  "teleony_activation_widget_activate_price_free": "Gratuit",
+  "telephony_activation_shipping_mode": "Mode de livraison :",
+  "telefony_activation_widget_activate_price_free": "Gratuit",
   "telefony_activation_widget_free_slot_zero": "Vous n'avez plus de service disponible.",
   "telephony_activation_widget_activate_price_title": "Prix",
   "telefony_activation_widget_activate_button_label": "Valider la commande",
@@ -52,5 +52,6 @@
   "telephony_activation_order_nb_select_phones": "Vous avez sélectionné {{nbLines}} lignes, merci de sélectionner {{nbLines}} produits.",
   "telephony_activation_choice_sip_line_without_phone": "Ligne SIP sans téléphone",
   "telephony_activation_hardware_setup_fees_label": "Frais d'activation",
-  "telephony_activation_choice_quantity_max": "Vous avez atteint le maximum de produits, vous ne pouvez pas en ajouter plus."
+  "telephony_activation_choice_quantity_max": "Vous avez atteint le maximum de produits, vous ne pouvez pas en ajouter plus.",
+  "telephony_activation_return": "Retour"
 }

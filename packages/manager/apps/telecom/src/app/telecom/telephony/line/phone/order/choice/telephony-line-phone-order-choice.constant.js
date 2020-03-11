@@ -43,9 +43,9 @@ export const TELEPHONY_LINE_PHONE_CHOICE = {
   },
   'gigaset.n670ip.pro': {
     url:
-      'https://www.ovhtelecom.fr/telephonie/telephones/gigaset-maxwell-3/fiche_technique.xml',
+      'https://www.ovhtelecom.fr/telephonie/telephones/gigaset-gigaset-n670-r650hfiche_technique.xml',
     img:
-      'https://www.ovhtelecom.fr/images/telephonie/2020/gigaset/Gigaset_Maxwell3_1.jpg',
+      'https://www.ovhtelecom.fr/images/telephonie/2020/gigaset/Gigaset_N670IP_PRO.jpg',
   },
   'gigaset.n670r650h': {
     url:

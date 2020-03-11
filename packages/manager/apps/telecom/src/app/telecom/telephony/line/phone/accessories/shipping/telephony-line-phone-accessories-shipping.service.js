@@ -26,6 +26,6 @@ export default function filterContact(contacts) {
     ),
     (contact) =>
       get(contact, 'address') &&
-      ['BE', 'FR', 'CH'].indexOf(contact.address.country) > -1,
+      ['BE', 'FR', 'CH'].includes(contact.address.country),
   );
 }

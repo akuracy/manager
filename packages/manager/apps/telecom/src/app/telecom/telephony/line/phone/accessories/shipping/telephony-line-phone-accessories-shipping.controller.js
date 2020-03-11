@@ -1,5 +1,5 @@
-import each from 'lodash/each';
-import filter from 'lodash/filter';
+import forEach from 'lodash/forEach';
+import sumBy from 'lodash/sumBy';
 
 import filterContact from './telephony-line-phone-accessories-shipping.service';
 
@@ -22,30 +22,8 @@ export default class TelecomTelephonyLinePhoneAccessoriesShippingCtrl {
     this.contactChoiceOptions = null;
     this.contactDeferred = this.$q.defer();
 
-    this.init();
-  }
-
-  /*= =====================================
-    =            INITIALIZATION            =
-    ====================================== */
-
-  init() {
     this.loading.init = true;
     this.process = this.TucTelephonyAccessoriesOrderProcess.getOrderProcess();
-    this.initComponentsOptions();
-  }
-
-  /* -----  End of INITIALIZATION  ------*/
-
-  getTotalAccessoriesQuantity() {
-    let totalQty = 0;
-    angular.forEach(this.process.accessoriesList, (accessory) => {
-      totalQty += accessory.quantity;
-    });
-    return totalQty;
-  }
-
-  initComponentsOptions() {
     let shippingPrice = 0;
 
     // shipping mode selection options
@@ -53,18 +31,16 @@ export default class TelecomTelephonyLinePhoneAccessoriesShippingCtrl {
       this.getTotalAccessoriesQuantity() > 1;
 
     // contact options
+    console.log('contact options');
     this.contactDeferred.promise.then(() =>
       this.TucTelephonyAccessoriesOrderProcess.getOrderCheckout()
         .then((order) => {
-          each(
-            filter(order.details, {
-              detailType: 'DELIVERY',
-            }),
-            (detail) => {
-              shippingPrice += detail.totalPrice.value;
-            },
-          );
-
+          shippingPrice = sumBy(order.details, (detail) => {
+            if (detail.detailType === 'DELIVERY') {
+              return detail.totalPrice.value;
+            }
+            return 0;
+          });
           this.shippingOptions.shippingPrice = shippingPrice;
         })
         .finally(() => {
@@ -74,6 +50,14 @@ export default class TelecomTelephonyLinePhoneAccessoriesShippingCtrl {
     this.contactChoiceOptions = {
       filter: filterContact,
     };
+  }
+
+  getTotalAccessoriesQuantity() {
+    let totalQty = 0;
+    forEach(this.process.accessoriesList, (accessory) => {
+      totalQty += accessory.quantity;
+    });
+    return totalQty;
   }
 
   /* -----  End of HELPERS  ------*/

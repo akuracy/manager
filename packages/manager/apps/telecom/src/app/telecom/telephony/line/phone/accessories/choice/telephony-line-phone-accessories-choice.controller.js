@@ -1,8 +1,11 @@
 import chunk from 'lodash/chunk';
 import find from 'lodash/find';
-import sortBy from 'lodash/sortBy';
+import forEach from 'lodash/forEach';
+import orderBy from 'lodash/orderBy';
 
 import initializeBrandList from './telephony-line-phone-accessories-choice.service';
+
+import { MAX_QUANTITY } from './telephony-line-phone-accessories-choice.constant';
 
 export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
   /* @ngInject */
@@ -68,18 +71,15 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
 
   updateOrderTotal(quantity, accessoryName) {
     let total = 0;
-    angular.forEach(this.process.accessoriesList, (accessory) => {
+    forEach(this.process.accessoriesList, (accessory) => {
       if (accessory.name === accessoryName) {
         total += accessory.price.value * quantity;
       } else {
         total += accessory.price.value * accessory.quantity;
       }
 
-      if (quantity === 5 || accessory.quantity === 5) {
-        this.maxQuantity = true;
-      } else {
-        this.maxQuantity = false;
-      }
+      this.maxQuantity =
+        quantity === MAX_QUANTITY || accessory.quantity === MAX_QUANTITY;
     });
 
     this.orderTotal = this.TucTelephonyAccessoriesOrderProcess.getPriceStruct(
@@ -90,16 +90,12 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
   }
 
   filterByBrand(brand) {
-    const listFiltered = [];
     if ('all'.includes(brand.toLowerCase())) {
       this.accessoriesDisplayed = this.process.accessoriesList;
     } else {
-      this.process.accessoriesList.forEach((offer) => {
-        if (offer.name.includes(brand.toLowerCase())) {
-          listFiltered.push(offer);
-        }
-      });
-      this.accessoriesDisplayed = listFiltered;
+      this.accessoriesDisplayed = this.process.accessoriesList.filter((offer) =>
+        offer.name.includes(brand.toLowerCase()),
+      );
     }
   }
 
@@ -108,17 +104,19 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
   }
 
   sortPriceAsc() {
-    this.accessoriesDisplayed = sortBy(
+    this.accessoriesDisplayed = orderBy(
       this.process.accessoriesList,
       'price.value',
+      'asc',
     );
   }
 
   sortPriceDesc() {
-    this.accessoriesDisplayed = sortBy(
+    this.accessoriesDisplayed = orderBy(
       this.process.accessoriesList,
       'price.value',
-    ).reverse();
+      'desc',
+    );
   }
 
   filterWithPhone() {

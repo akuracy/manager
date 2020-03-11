@@ -4,14 +4,16 @@ import head from 'lodash/head';
 import isArray from 'lodash/isArray';
 import map from 'lodash/map';
 import remove from 'lodash/remove';
+import orderBy from 'lodash/orderBy';
 import set from 'lodash/set';
-import sortBy from 'lodash/sortBy';
 import sum from 'lodash/sum';
 
 import {
   buildFramedObject,
   removeDuplicateAddress,
 } from './pack-voipLine-activation.service';
+
+import { TELECOM_SHIPPING_MODE } from './pack-voipLine-activation.constant';
 
 export default class PackVoipLineActivationCtrl {
   /* @ngInject */
@@ -35,11 +37,76 @@ export default class PackVoipLineActivationCtrl {
 
   $onInit() {
     this.transporterCost = this.costs.voip.shipping.transporter.value;
+    this.currency = this.costs.voip.shipping.transporter.currencyCode;
     this.canUncheckOrderablePhones = true;
 
     this.isFirstSelect = true;
 
-    this.init();
+    this.shippingMode = TELECOM_SHIPPING_MODE.mondialRelay;
+    this.mondialRelay = null;
+    this.phoneBill = {
+      deposit: 0,
+      fees: 0,
+      transportCost: 0,
+      total: 0,
+    };
+    this.modem = {};
+    this.orderCountSelect = [];
+    this.framedLines = [];
+
+    this.phoneToOrder = null;
+    this.isSipOnly = false;
+
+    this.loadData(this.packName).then((data) => {
+      this.modem.availableSlots = find(data[0], { name: 'voipLine' });
+
+      // eslint-disable-next-line prefer-destructuring
+      this.hardwares = data[1];
+
+      // initialize brand list for tabs
+      this.initializeBrandList();
+
+      const linesOnModems = remove(this.hardwares, { name: 'modem' });
+      if (linesOnModems && isArray(linesOnModems)) {
+        // Add this choice to hardwares list
+        if (linesOnModems.length > 0) {
+          this.isSipLineAvailable = true;
+        } else {
+          this.isSipLineAvailable = false;
+        }
+
+        this.modem.linesOnModem = linesOnModems.length
+          ? linesOnModems[0].max
+          : 0;
+      }
+
+      this.selectedPhones = [];
+
+      // Set lines for modem
+      this.modem.lines = [];
+      for (let i = 0; i < this.modem.availableSlots.available; i += 1) {
+        this.modem.lines.push({
+          hardware: null,
+          enabled: true,
+          needHardware: true,
+          isShipping() {
+            return !!this.needHardware && !!this.enabled;
+          },
+          isConfigured() {
+            return (
+              !this.enabled ||
+              !this.needHardware ||
+              (!!this.needHardware && !!this.enabled && !!this.hardware)
+            );
+          },
+        });
+      }
+
+      this.buildSlotCount(this.modem.availableSlots.available);
+
+      this.shippingAddresses = removeDuplicateAddress(data[2]);
+      this.framedShippingAddresses = buildFramedObject(this.shippingAddresses);
+    }, this.TucToastError);
   }
 
   /**
@@ -139,7 +206,6 @@ export default class PackVoipLineActivationCtrl {
 
     this.framedLines = buildFramedObject(
       this.modem.lines,
-      2,
       (line, localIndex) => {
         if (!line.enabled) {
           return false;
@@ -203,9 +269,9 @@ export default class PackVoipLineActivationCtrl {
    */
   isTransportConfigured() {
     switch (this.shippingMode) {
-      case 'mondialRelay':
+      case TELECOM_SHIPPING_MODE.mondialRelay:
         return !!this.mondialRelay;
-      case 'transporter':
+      case TELECOM_SHIPPING_MODE.transporter:
         return !!this.transporterAddress;
       default:
         return false;
@@ -214,11 +280,11 @@ export default class PackVoipLineActivationCtrl {
 
   getTransporter() {
     switch (this.shippingMode) {
-      case 'mondialRelay':
+      case TELECOM_SHIPPING_MODE.mondialRelay:
         return {
           mondialRelayId: this.mondialRelay.id,
         };
-      case 'transporter':
+      case TELECOM_SHIPPING_MODE.transporter:
         return {
           shippingId: this.transporterAddress,
         };
@@ -256,11 +322,9 @@ export default class PackVoipLineActivationCtrl {
     const data = [];
     this.selectedPhones.forEach((line) => {
       if (line.needShipping) {
-        if (line) {
-          data.push(
-            angular.extend({ hardwareName: line.name }, this.getTransporter()),
-          );
-        }
+        data.push(
+          angular.extend({ hardwareName: line.name }, this.getTransporter()),
+        );
       } else if (line.name.includes('sipLine')) {
         data.push({ hardwareName: 'modem' });
       }
@@ -288,77 +352,6 @@ export default class PackVoipLineActivationCtrl {
       });
   }
 
-  /**
-   * Initialize the controller
-   */
-  init() {
-    this.shippingMode = 'mondialRelay';
-    this.mondialRelay = null;
-    this.phoneBill = {
-      deposit: 0,
-      fees: 0,
-      transportCost: 0,
-      total: 0,
-    };
-    this.modem = {};
-    this.orderCountSelect = [];
-    this.framedLines = [];
-
-    this.phoneToOrder = null;
-    this.isSipOnly = false;
-
-    this.loadData(this.packName).then((data) => {
-      this.modem.availableSlots = find(data[0], { name: 'voipLine' });
-
-      // eslint-disable-next-line prefer-destructuring
-      this.hardwares = data[1];
-
-      // initialize brand list for tabs
-      this.initializeBrandList();
-
-      const linesOnModems = remove(this.hardwares, { name: 'modem' });
-      if (linesOnModems && isArray(linesOnModems)) {
-        // Add this choice to hardwares list
-        if (linesOnModems.length > 0) {
-          this.isSipLineAvailable = true;
-        } else {
-          this.isSipLineAvailable = false;
-        }
-
-        this.modem.linesOnModem = linesOnModems.length
-          ? linesOnModems[0].max
-          : 0;
-      }
-
-      this.selectedPhones = [];
-
-      // Set lines for modem
-      this.modem.lines = [];
-      for (let i = 0; i < this.modem.availableSlots.available; i += 1) {
-        this.modem.lines.push({
-          hardware: null,
-          enabled: true,
-          needHardware: true,
-          isShipping() {
-            return !!this.needHardware && !!this.enabled;
-          },
-          isConfigured() {
-            return (
-              !this.enabled ||
-              !this.needHardware ||
-              (!!this.needHardware && !!this.enabled && !!this.hardware)
-            );
-          },
-        });
-      }
-
-      this.buildSlotCount(this.modem.availableSlots.available);
-
-      this.shippingAddresses = removeDuplicateAddress(data[2]);
-      this.framedShippingAddresses = buildFramedObject(this.shippingAddresses);
-    }, this.TucToastError);
-  }
-
   initializeBrandList() {
     const brandList = ['All'];
     if (this.hardwares.length) {
@@ -376,25 +369,21 @@ export default class PackVoipLineActivationCtrl {
   }
 
   filterByBrand(brand) {
-    const listFiltered = [];
     if ('all'.includes(brand.toLowerCase())) {
       this.phonesDisplayed = this.hardwares;
     } else {
-      this.hardwares.forEach((offer) => {
-        if (offer.name.includes(brand.toLowerCase())) {
-          listFiltered.push(offer);
-        }
-      });
-      this.phonesDisplayed = listFiltered;
+      this.phonesDisplayed = this.hardwares.filter((offer) =>
+        offer.name.includes(brand.toLowerCase()),
+      );
     }
   }
 
   sortPriceAsc() {
-    this.phonesDisplayed = sortBy(this.hardwares, 'deposit.value');
+    this.phonesDisplayed = orderBy(this.hardwares, 'deposit.value', 'asc');
   }
 
   sortPriceDesc() {
-    this.phonesDisplayed = sortBy(this.hardwares, 'deposit.value').reverse();
+    this.phonesDisplayed = orderBy(this.hardwares, 'deposit.value', 'desc');
   }
 
   // Available only for 1 line to activate
@@ -448,27 +437,20 @@ export default class PackVoipLineActivationCtrl {
     }
   }
 
-  updateShipping() {
-    this.updatePhoneBill();
-  }
-
   updatePhoneBill() {
     let deposit = 0;
-    if (this.selectedPhones && this.selectedPhones.length > 0) {
-      this.selectedPhones.forEach((line) => {
-        deposit += line.deposit.value * line.quantity;
-      });
-    }
     let fees = 0;
     if (this.selectedPhones && this.selectedPhones.length > 0) {
       this.selectedPhones.forEach((line) => {
+        deposit += line.deposit.value * line.quantity;
         if (line.fees) {
           fees += line.fees.value * line.quantity;
         }
       });
     }
     const transportCost =
-      this.shippingMode === 'mondialRelay' || !this.isShipping()
+      this.shippingMode === TELECOM_SHIPPING_MODE.mondialRelay ||
+      !this.isShipping()
         ? 0
         : this.costs.voip.shipping.transporter.value;
 
