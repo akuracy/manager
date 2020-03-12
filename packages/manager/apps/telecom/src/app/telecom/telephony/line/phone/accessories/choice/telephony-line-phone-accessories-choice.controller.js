@@ -1,6 +1,5 @@
 import chunk from 'lodash/chunk';
 import find from 'lodash/find';
-import forEach from 'lodash/forEach';
 import orderBy from 'lodash/orderBy';
 
 import initializeBrandList from './telephony-line-phone-accessories-choice.service';
@@ -70,17 +69,18 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
   }
 
   updateOrderTotal(quantity, accessoryName) {
-    let total = 0;
-    forEach(this.process.accessoriesList, (accessory) => {
-      if (accessory.name === accessoryName) {
-        total += accessory.price.value * quantity;
-      } else {
-        total += accessory.price.value * accessory.quantity;
-      }
-
-      this.maxQuantity =
-        quantity === MAX_QUANTITY || accessory.quantity === MAX_QUANTITY;
-    });
+    const initialValue = 0;
+    const total = this.process.accessoriesList.reduce(
+      (totalReduce, accessory) => {
+        this.maxQuantity =
+          quantity === MAX_QUANTITY || accessory.quantity === MAX_QUANTITY;
+        if (accessory.name === accessoryName) {
+          return totalReduce + accessory.price.value * quantity;
+        }
+        return totalReduce + accessory.price.value * accessory.quantity;
+      },
+      initialValue,
+    );
 
     this.orderTotal = this.TucTelephonyAccessoriesOrderProcess.getPriceStruct(
       total,
@@ -131,20 +131,18 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
     return this.TucTelephonyAccessoriesOrderProcess.getAvailableAccessoriesCompatible(
       brand,
     )
-      .then(
-        (orderProcess) => {
-          this.process = orderProcess;
-          this.brandList = initializeBrandList(orderProcess.accessoriesList);
-          this.accessoriesDisplayed = orderProcess.accessoriesList;
-          this.orderTotal = this.TucTelephonyAccessoriesOrderProcess.getPriceStruct(
-            0,
-          );
-        },
-        (error) => {
-          this.error.loading = error;
-          return this.$q.reject(error);
-        },
-      )
+      .then((orderProcess) => {
+        this.process = orderProcess;
+        this.brandList = initializeBrandList(orderProcess.accessoriesList);
+        this.accessoriesDisplayed = orderProcess.accessoriesList;
+        this.orderTotal = this.TucTelephonyAccessoriesOrderProcess.getPriceStruct(
+          0,
+        );
+      })
+      .catch((error) => {
+        this.error.loading = error;
+        return this.$q.reject(error);
+      })
       .finally(() => {
         this.loading.init = false;
       });

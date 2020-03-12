@@ -31,7 +31,6 @@ export default class TelecomTelephonyLinePhoneAccessoriesShippingCtrl {
       this.getTotalAccessoriesQuantity() > 1;
 
     // contact options
-    console.log('contact options');
     this.contactDeferred.promise.then(() =>
       this.TucTelephonyAccessoriesOrderProcess.getOrderCheckout()
         .then((order) => {
