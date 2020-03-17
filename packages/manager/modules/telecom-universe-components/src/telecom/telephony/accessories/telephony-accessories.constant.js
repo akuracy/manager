@@ -189,97 +189,105 @@ export const TELEPHONY_LINE_PHONE_ACCESSORIES = {
   'sennheiser.mbpro1': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/MB Pro 1.png',
   },
   'sennheiser.mbpro2': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/MB Pro 2.png',
   },
   'sennheiser.mb660': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.sdw5036': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/SDW 5036.png',
   },
   'sennheiser.sdw5066': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/SDW 5066.png',
   },
   'sennheiser.sc268': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/SC 268.png',
   },
   'sennheiser.sc238': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/SC 238 (1).png',
   },
   'sennheiser.sc165usb': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/SC 165 USB.png',
   },
   'sennheiser.sc165usbc': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img:
+      'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/SC 165 USB.png',
   },
   'sennheiser.ehsdhsg.v2': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.ehscisco': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.ehscisco02': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.cstd01.v2': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.cstd08': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.ccel195': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.cmb01ctrl': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.usbed01': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.usbedcc': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'sennheiser.ccel1912': {
     url:
       'https://www.ovhtelecom.fr/telephonie/comparatif-accessoires-telephone.xml/',
-    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/seinnheiser/',
+    img: 'https://www.ovhtelecom.fr/images/telephonie/2020/sennheiser/',
   },
   'yealink.exp50': {
     url:
