@@ -138,7 +138,7 @@
                             <!-- Define tabs -->
                             <oui-tabs>
                                 <oui-tabs-item
-                                    data-ng-repeat="brand in $ctrl.brandList"
+                                    data-ng-repeat="brand in $ctrl.brandList track by $index"
                                     data-heading="{{ ::brand }}"
                                     data-on-active="$ctrl.filterByBrand(brand)"
                                 >
@@ -162,7 +162,7 @@
                                                     ></div>
                                                     <div class="thumbnail">
                                                         <span
-                                                            class="text-center ovh-font ovh-font-phone"
+                                                            class="text-center ovh-font ovh-font-phone sized"
                                                         ></span>
                                                     </div>
                                                     <oui-numeric
@@ -179,7 +179,7 @@
                                         </div>
                                         <div
                                             class="col-xs-12 col-sm-6 col-md-3 phone-item"
-                                            data-ng-repeat="phone in $ctrl.phonesDisplayed"
+                                            data-ng-repeat="phone in $ctrl.phonesDisplayed track by phone.name"
                                         >
                                             <oui-radio-group
                                                 data-model="$ctrl.phoneToOrder"
@@ -193,14 +193,14 @@
                                                     <div>{{phone.label}}</div>
                                                     <div class="thumbnail">
                                                         <img
+                                                            class="sized"
                                                             data-ng-if="phone.image"
-                                                            alt=""
-                                                            data-ng-alt="{{phone.label}}"
+                                                            alt="{{phone.label}}"
                                                             data-ng-src="{{phone.image}}"
                                                         />
                                                         <span
                                                             data-ng-if="!phone.image"
-                                                            class="text-center ovh-font ovh-font-phone"
+                                                            class="text-center ovh-font ovh-font-phone sized"
                                                         ></span>
                                                     </div>
                                                     <div class="caption">
@@ -320,55 +320,48 @@
                 >
                     <div
                         class="row mt-3"
-                        data-ng-repeat="addressGroup in $ctrl.framedShippingAddresses"
+                        data-ng-repeat="address in $ctrl.shippingAddresses track by address.shippingId"
                     >
-                        <div
-                            class="col-md-4"
-                            data-ng-repeat="address in addressGroup track by address.shippingId"
-                        >
-                            <div class="block-emphasis">
-                                <div class="block-emphasis__row">
-                                    <div
-                                        class="block-emphasis__column block-emphasis__column--first"
-                                    >
-                                        <input
-                                            type="radio"
-                                            data-ng-model="$ctrl.transporterAddress"
-                                            value="{{address.shippingId}}"
-                                            name="{{ 'address-' + address.shippingId}}"
-                                            id="{{ 'addr_' + address.shippingId + 'Elem'}}"
-                                            required
-                                        />
-                                    </div>
-                                    <label
-                                        class="block-emphasis__column"
-                                        for="{{ 'addr_' + address.shippingId + 'Elem'}}"
-                                    >
-                                        <div>
-                                            <span
-                                                data-ng-bind="address.firstName"
-                                            ></span>
-                                            <span
-                                                data-ng-bind="address.lastName"
-                                            ></span>
-                                        </div>
-                                        <div
-                                            data-ng-bind="address.address"
-                                        ></div>
-                                        <div>
-                                            <span
-                                                data-ng-bind="address.zipCode"
-                                            ></span>
-                                            <span
-                                                data-ng-bind="address.cityName"
-                                            ></span>
-                                            -
-                                            <span
-                                                data-ng-bind="address.countryCode"
-                                            ></span>
-                                        </div>
-                                    </label>
+                        <div class="block-emphasis">
+                            <div class="block-emphasis__row">
+                                <div
+                                    class="block-emphasis__column block-emphasis__column--first"
+                                >
+                                    <input
+                                        type="radio"
+                                        data-ng-model="$ctrl.transporterAddress"
+                                        value="{{address.shippingId}}"
+                                        name="{{ 'address-' + address.shippingId}}"
+                                        id="{{ 'addr_' + address.shippingId + 'Elem'}}"
+                                        required
+                                    />
                                 </div>
+                                <label
+                                    class="block-emphasis__column"
+                                    for="{{ 'addr_' + address.shippingId + 'Elem'}}"
+                                >
+                                    <div>
+                                        <span
+                                            data-ng-bind="address.firstName"
+                                        ></span>
+                                        <span
+                                            data-ng-bind="address.lastName"
+                                        ></span>
+                                    </div>
+                                    <div data-ng-bind="address.address"></div>
+                                    <div>
+                                        <span
+                                            data-ng-bind="address.zipCode"
+                                        ></span>
+                                        <span
+                                            data-ng-bind="address.cityName"
+                                        ></span>
+                                        -
+                                        <span
+                                            data-ng-bind="address.countryCode"
+                                        ></span>
+                                    </div>
+                                </label>
                             </div>
                         </div>
                     </div>

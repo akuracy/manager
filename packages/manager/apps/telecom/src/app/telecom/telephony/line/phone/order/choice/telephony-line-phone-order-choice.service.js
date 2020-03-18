@@ -3,8 +3,7 @@
  * @param {Array} offers
  */
 export default function initializeBrandList(offers) {
-  const brandList = ['All'];
-  offers.forEach((offer) => {
+  let brands = offers.map((offer) => {
     let brand;
     if (offer.brand) {
       brand = offer.brand.substring(0, offer.brand.indexOf('.'));
@@ -12,9 +11,9 @@ export default function initializeBrandList(offers) {
       brand = offer.name.substring(0, offer.name.indexOf('.'));
     }
     brand = brand.replace(/^./, brand[0].toUpperCase());
-    if (!brandList.includes(brand)) {
-      brandList.push(brand);
-    }
+    return brand;
   });
+  brands = brands.filter((offer, index) => brands.indexOf(offer) === index);
+  const brandList = ['All', ...brands];
   return brandList;
 }

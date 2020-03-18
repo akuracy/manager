@@ -86,7 +86,7 @@
                     <div class="row">
                         <div
                             class="col-xs-12 col-sm-6 col-md-3 accessory-item"
-                            data-ng-repeat="accessory in $ctrl.accessoriesDisplayed"
+                            data-ng-repeat="accessory in $ctrl.accessoriesDisplayed track by accessory.name"
                         >
                             <oui-radio-group
                                 data-model="$ctrl.accessoryToOrder"
@@ -99,13 +99,14 @@
                                 >
                                     <div class="thumbnail">
                                         <img
+                                            class="sized"
                                             data-ng-if="accessory.img"
                                             alt="{{accessory.description}}"
                                             data-ng-src="{{accessory.img}}"
                                         />
                                         <span
                                             data-ng-if="!accessory.img"
-                                            class="text-center ovh-font ovh-font-phone"
+                                            class="text-center ovh-font ovh-font-phone sized"
                                         ></span>
                                     </div>
                                     <div class="text-center">

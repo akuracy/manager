@@ -5,33 +5,6 @@ import keys from 'lodash/keys';
 import pick from 'lodash/pick';
 
 /**
- * Build an array of large x n elements
- * @param {array} arrayData         Input data (flat array)
- * @param {function} callbackParam  Function to format data. if the function return false,
- *                                  data are ignored
- * @returns {Array}
- */
-export function buildFramedObject(arrayData, callbackParam) {
-  const framedData = [];
-  let localIndex = 0;
-  let callback = callbackParam;
-  if (typeof callback === 'undefined') {
-    callback = (val) => val;
-  }
-  arrayData.forEach((data, index) => {
-    const computedData = callback(data, localIndex, index);
-    if (computedData !== false) {
-      if (framedData.length <= Math.floor(localIndex / 2)) {
-        framedData[Math.floor(localIndex / 2)] = [];
-      }
-      framedData[Math.floor(localIndex / 2)][localIndex % 2] = computedData;
-      localIndex += 1;
-    }
-  });
-  return framedData;
-}
-
-/**
  * Remove Dupplicate address
  * @param {array} dataParam List of addresses
  * @returns {array}
@@ -68,4 +41,4 @@ export function removeDuplicateAddress(dataParam) {
   return addresses;
 }
 
-export default { buildFramedObject, removeDuplicateAddress };
+export default { removeDuplicateAddress };

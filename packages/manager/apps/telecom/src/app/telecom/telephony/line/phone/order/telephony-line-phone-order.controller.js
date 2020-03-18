@@ -102,24 +102,30 @@ export default class TelecomTelephonyLinePhoneOrderCtrl {
       });
 
     this.$scope.$watch('$ctrl.orderStep', (step) => {
-      switch (step) {
-        case 'hardware':
-          // Nothing to do
-          break;
-        case 'summary':
-          this.isStepLoading = true;
-          this.order.isContractsAccepted = false;
-          this.fetchOrder(this.order)
-            .then((result) => {
-              this.order.summary = result;
-            })
-            .catch((err) => new this.TucToastError(err))
-            .finally(() => {
-              this.isStepLoading = false;
-            });
-          break;
-        default:
-          break;
+      if (step === 'summary') {
+        this.isStepLoading = true;
+        this.order.isContractsAccepted = false;
+        const params = {
+          serviceName: this.serviceName,
+          hardware: this.order.phone,
+          retractation: this.order.retract,
+          shippingContactId: this.order.contact.id,
+        };
+        if (get(this.order, 'shipping.mode') === 'mondialRelay') {
+          params.mondialRelayId = this.order.shipping.relay.id;
+        }
+        this.isFetchingOrder = true;
+        this.OvhApiOrder.Telephony()
+          .v6()
+          .getHardware(params)
+          .$promise.then((result) => {
+            this.order.summary = result;
+          })
+          .catch((err) => new this.TucToastError(err))
+          .finally(() => {
+            this.isStepLoading = false;
+            this.isFetchingOrder = false;
+          });
       }
     });
 
@@ -156,25 +162,6 @@ export default class TelecomTelephonyLinePhoneOrderCtrl {
     this.$scope.$on('returnPhone', () => {
       this.orderStep = 'returnOnly';
     });
-  }
-
-  fetchOrder(order) {
-    const params = {
-      serviceName: this.serviceName,
-      hardware: order.phone,
-      retractation: order.retract,
-      shippingContactId: order.contact.id,
-    };
-    if (get(order, 'shipping.mode') === 'mondialRelay') {
-      params.mondialRelayId = order.shipping.relay.id;
-    }
-    this.isFetchingOrder = true;
-    return this.OvhApiOrder.Telephony()
-      .v6()
-      .getHardware(params)
-      .$promise.finally(() => {
-        this.isFetchingOrder = false;
-      });
   }
 
   submitPhoneReturn() {

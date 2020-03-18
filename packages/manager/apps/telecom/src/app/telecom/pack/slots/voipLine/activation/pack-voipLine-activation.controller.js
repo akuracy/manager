@@ -1,5 +1,4 @@
 import find from 'lodash/find';
-import flatten from 'lodash/flatten';
 import head from 'lodash/head';
 import isArray from 'lodash/isArray';
 import map from 'lodash/map';
@@ -8,10 +7,7 @@ import orderBy from 'lodash/orderBy';
 import set from 'lodash/set';
 import sum from 'lodash/sum';
 
-import {
-  buildFramedObject,
-  removeDuplicateAddress,
-} from './pack-voipLine-activation.service';
+import { removeDuplicateAddress } from './pack-voipLine-activation.service';
 
 import { TELECOM_SHIPPING_MODE } from './pack-voipLine-activation.constant';
 
@@ -105,7 +101,6 @@ export default class PackVoipLineActivationCtrl {
       this.buildSlotCount(this.modem.availableSlots.available);
 
       this.shippingAddresses = removeDuplicateAddress(data[2]);
-      this.framedShippingAddresses = buildFramedObject(this.shippingAddresses);
     }, this.TucToastError);
   }
 
@@ -169,12 +164,8 @@ export default class PackVoipLineActivationCtrl {
    */
   checkIfStillCanUncheckOrderablePhones() {
     const uncheckedPhones = sum(
-      map(flatten(this.framedLines), (framedLine) => {
-        if (!framedLine.line.needHardware && framedLine.line.hardware) {
-          set(framedLine, 'line.hardware', null);
-        }
-
-        return framedLine.line.needHardware ? 0 : 1;
+      map(this.modem.lines, (line) => {
+        return line.needHardware ? 0 : 1;
       }),
     );
 
@@ -203,21 +194,6 @@ export default class PackVoipLineActivationCtrl {
     this.modem.lines.forEach((line, index) => {
       set(line, 'enabled', index < this.orderCount.value);
     });
-
-    this.framedLines = buildFramedObject(
-      this.modem.lines,
-      (line, localIndex) => {
-        if (!line.enabled) {
-          return false;
-        }
-        return {
-          line,
-          carouselIndex: 0,
-          availableHardwares: JSON.parse(JSON.stringify(this.hardwares)),
-          index: localIndex + 1,
-        };
-      },
-    );
 
     this.spinnerExtremities = {
       min: 0,
@@ -353,19 +329,13 @@ export default class PackVoipLineActivationCtrl {
   }
 
   initializeBrandList() {
-    const brandList = ['All'];
-    if (this.hardwares.length) {
-      this.hardwares.forEach((offer) => {
-        let brand = offer.name.substring(0, offer.name.indexOf('.'));
-        if (brand) {
-          brand = brand.replace(/^./, brand[0].toUpperCase());
-          if (!brandList.includes(brand)) {
-            brandList.push(brand);
-          }
-        }
-      });
-    }
-    this.brandList = brandList;
+    let brands = this.hardwares.map((offer) => {
+      let brand = offer.name.substring(0, offer.name.indexOf('.'));
+      brand = brand.replace(/^./, brand[0].toUpperCase());
+      return brand;
+    });
+    brands = brands.filter((offer, index) => brands.indexOf(offer) === index);
+    this.brandList = ['All', ...brands];
   }
 
   filterByBrand(brand) {

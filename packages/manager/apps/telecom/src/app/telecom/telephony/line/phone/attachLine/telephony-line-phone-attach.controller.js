@@ -30,7 +30,7 @@ export default class TelephonyLinePhoneOrderAttachCtrl {
   }
 
   init() {
-    this.TelephonyMediator.getGroup(this.billingAccount)
+    return this.TelephonyMediator.getGroup(this.billingAccount)
       .then((group) => {
         this.line = group.getLine(this.serviceName);
       })

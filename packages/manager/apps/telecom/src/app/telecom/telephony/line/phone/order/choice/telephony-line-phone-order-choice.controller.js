@@ -12,7 +12,15 @@ import initializeBrandList from './telephony-line-phone-order-choice.service';
 
 export default class TelephonyLinePhoneOrderChoiceCtrl {
   /* @ngInject */
-  constructor($scope, OvhApiOrder, OvhApiTelephony, TucToast, TucToastError) {
+  constructor(
+    $q,
+    $scope,
+    OvhApiOrder,
+    OvhApiTelephony,
+    TucToast,
+    TucToastError,
+  ) {
+    this.$q = $q;
     this.$scope = $scope;
     this.OvhApiOrder = OvhApiOrder;
     this.OvhApiTelephony = OvhApiTelephony;
@@ -49,12 +57,15 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
           this.isStepLoading = false;
         });
     } else {
-      this.fetchOfferPhones(this.line.getPublicOffer.name).then((offers) => {
-        this.phoneOffers = offers;
-        this.brandList = initializeBrandList(offers);
-        this.updatePhones();
-        this.isStepLoading = false;
-      });
+      this.fetchOfferPhones(this.line.getPublicOffer.name)
+        .then((offers) => {
+          this.phoneOffers = offers;
+          this.brandList = initializeBrandList(offers);
+          this.updatePhones();
+        })
+        .finally(() => {
+          this.isStepLoading = false;
+        });
     }
   }
 
@@ -105,7 +116,7 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
       this.phonesDisplayed = this.phoneOffers;
     } else {
       this.phonesDisplayed = this.phoneOffers.filter((offer) =>
-        offer.name.includes(brand.toLowerCase()),
+        offer.brand.includes(brand.toLowerCase()),
       );
     }
   }
@@ -120,42 +131,44 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
 
   updatePhones() {
     const phones = this.phoneOffers;
-    map(phones, (phone) => {
-      const params = {
-        hardware: phone.brand,
-        retractation: false,
-      };
-      return this.OvhApiOrder.Telephony()
-        .v6()
-        .orderHardware(
-          {
-            serviceName: this.serviceName,
-          },
-          params,
-        )
-        .$promise.then((order) => {
-          map(order.details, (detail) => {
-            if (detail.detailType === 'INSTALLATION') {
-              angular.extend(phone, {
-                setupFees: {
-                  description: `${detail.description} :`,
-                  price: detail.totalPrice,
-                },
-              });
-            }
+    this.$q.all(
+      map(phones, (phone) => {
+        const params = {
+          hardware: phone.brand,
+          retractation: false,
+        };
+        return this.OvhApiOrder.Telephony()
+          .v6()
+          .orderHardware(
+            {
+              serviceName: this.serviceName,
+            },
+            params,
+          )
+          .$promise.then((order) => {
+            map(order.details, (detail) => {
+              if (detail.detailType === 'INSTALLATION') {
+                angular.extend(phone, {
+                  setupFees: {
+                    description: `${detail.description} :`,
+                    price: detail.totalPrice,
+                  },
+                });
+              }
+            });
+          })
+          .finally(() => {
+            angular.extend(phone, {
+              url: TELEPHONY_LINE_PHONE_CHOICE[phone.brand]
+                ? TELEPHONY_LINE_PHONE_CHOICE[phone.brand].url
+                : null,
+              img: TELEPHONY_LINE_PHONE_CHOICE[phone.brand]
+                ? TELEPHONY_LINE_PHONE_CHOICE[phone.brand].img
+                : null,
+            });
           });
-        })
-        .finally(() => {
-          angular.extend(phone, {
-            url: TELEPHONY_LINE_PHONE_CHOICE[phone.brand]
-              ? TELEPHONY_LINE_PHONE_CHOICE[phone.brand].url
-              : null,
-            img: TELEPHONY_LINE_PHONE_CHOICE[phone.brand]
-              ? TELEPHONY_LINE_PHONE_CHOICE[phone.brand].img
-              : null,
-          });
-        });
-    });
+      }),
+    );
     this.phonesDisplayed = phones;
   }
 
