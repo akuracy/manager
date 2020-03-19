@@ -1,6 +1,6 @@
 import chunk from 'lodash/chunk';
-import find from 'lodash/find';
 import orderBy from 'lodash/orderBy';
+import some from 'lodash/some';
 
 import initializeBrandList from './telephony-line-phone-accessories-choice.service';
 
@@ -62,7 +62,7 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
   }
 
   hasAtLeastOneAccessory() {
-    return !!find(
+    return some(
       this.process.accessoriesList,
       (accessory) => accessory.quantity > 0,
     );
