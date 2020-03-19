@@ -36,6 +36,7 @@ import emailpro from '@ovh-ux/manager-emailpro';
 import exchange from '@ovh-ux/manager-exchange';
 import office from '@ovh-ux/manager-office';
 import sharepoint from '@ovh-ux/manager-sharepoint';
+import { detach as detachPreloader } from '@ovh-ux/manager-preloader';
 import moment from 'moment';
 
 import config from './config/config';
@@ -54,12 +55,13 @@ import hostingEmailActivateModule from './hosting/email/activate';
 import './css/source.less';
 import './css/source.scss';
 
-Environment.setRegion(__WEBPACK_REGION__);
 Environment.setVersion(__VERSION__);
+
+const moduleName = 'App';
 
 angular
   .module(
-    'App',
+    moduleName,
     [
       ovhManagerCore,
       ngPaginationFront,
@@ -121,8 +123,8 @@ angular
       emailDomainUpgradeModule,
       hostingEmail,
       hostingEmailActivateModule,
-      __NG_APP_INJECTIONS__,
-    ].filter(isString), // __NG_APP_INJECTIONS__ can be null)
+      ...get(__NG_APP_INJECTIONS__, Environment.getRegion(), []),
+    ].filter(isString),
   )
   .constant('constants', {
     prodMode: config.prodMode,
@@ -554,4 +556,14 @@ angular
       });
     },
   )
-  .run(/* @ngTranslationsInject:json ./translations */);
+  .run(/* @ngTranslationsInject:json ./translations */)
+  .run(
+    /* @ngInject */ ($rootScope, $transitions) => {
+      const unregisterHook = $transitions.onSuccess({}, () => {
+        detachPreloader();
+        unregisterHook();
+      });
+    },
+  );
+
+export default moduleName;
