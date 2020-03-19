@@ -5,12 +5,13 @@ import uiRouter from '@uirouter/angularjs';
 import angularTranslate from 'angular-translate';
 import 'ovh-ui-angular';
 
+import choice from './choice';
+import rma from './rma';
+import shipping from './shipping';
+import summary from './summary';
+
 import component from './telephony-line-phone-order.component';
 import routing from './telephony-line-phone-order.routing';
-import choice from './choice/telephony-line-phone-order-choice.component';
-import shipping from './shipping/telephony-line-phone-order-shipping.component';
-import summary from './summary/telephony-line-phone-order-summary.component';
-import rma from './rma/telephony-line-phone-order-rma.component';
 
 const moduleName = 'ovhTelecomLinePhoneOrder';
 
@@ -20,12 +21,12 @@ angular
     uiRouter,
     angularTranslate,
     'oui',
+    choice,
+    rma,
+    shipping,
+    summary,
   ])
   .component('telephonyLinePhoneOrder', component)
-  .component('linePhoneOrderChoice', choice)
-  .component('linePhoneOrderShipping', shipping)
-  .component('linePhoneOrderSummary', summary)
-  .component('linePhoneOrderRma', rma)
   .config(routing);
 
 export default moduleName;
