@@ -1,6 +1,9 @@
-export const TELECOM_SHIPPING_MODE = {
-  mondialRelay: 'mondialRelay',
-  transporter: 'transporter',
+export const TELECOM_VOIP_ACTIVATION = {
+  shippingMode: {
+    mondialRelay: 'mondialRelay',
+    transporter: 'transporter',
+  },
+  sipLine: 'sipLine',
 };
 
-export default { TELECOM_SHIPPING_MODE };
+export default { TELECOM_VOIP_ACTIVATION };

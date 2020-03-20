@@ -170,7 +170,7 @@
                                                         data-model="phone.quantity"
                                                         data-min="::$ctrl.spinnerExtremities.min"
                                                         data-max="::$ctrl.modem.linesOnModem"
-                                                        data-on-change="$ctrl.updateOrderTotal()"
+                                                        data-on-change="$ctrl.updateOrderTotal(modelValue, 'sipLine')"
                                                         data-ng-if="$ctrl.orderCount.value > 1"
                                                     >
                                                     </oui-numeric>
@@ -315,11 +315,11 @@
 
                 <!-- Transporter -->
                 <div
-                    class="animate-addresses"
+                    class="animate-addresses row mt-3"
                     data-ng-show="$ctrl.shippingMode === 'transporter'"
                 >
                     <div
-                        class="row mt-3"
+                        class="col-xs-12 col-sm-6 col-md-3"
                         data-ng-repeat="address in $ctrl.shippingAddresses track by address.shippingId"
                     >
                         <div class="block-emphasis">
