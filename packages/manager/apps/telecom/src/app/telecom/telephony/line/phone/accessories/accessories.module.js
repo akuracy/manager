@@ -10,8 +10,8 @@ import finalize from './finalize';
 import resume from './resume';
 import shipping from './shipping';
 
-import component from './telephony-line-phone-accessories.component';
-import routing from './telephony-line-phone-accessories.routing';
+import component from './accessories.component';
+import routing from './accessories.routing';
 
 const moduleName = 'ovhTelecomLinePhoneAccessories';
 
@@ -26,7 +26,7 @@ angular
     resume,
     shipping,
   ])
-  .component('telephonyLinePhoneAccessories', component)
+  .component('accessories', component)
   .config(routing);
 
 export default moduleName;

@@ -10,8 +10,8 @@ import rma from './rma';
 import shipping from './shipping';
 import summary from './summary';
 
-import component from './telephony-line-phone-order.component';
-import routing from './telephony-line-phone-order.routing';
+import component from './order.component';
+import routing from './order.routing';
 
 const moduleName = 'ovhTelecomLinePhoneOrder';
 
@@ -26,7 +26,7 @@ angular
     shipping,
     summary,
   ])
-  .component('telephonyLinePhoneOrder', component)
+  .component('order', component)
   .config(routing);
 
 export default moduleName;

@@ -1,5 +1,5 @@
-import template from './telephony-line-phone-order-choice.html';
-import controller from './telephony-line-phone-order-choice.controller';
+import template from './choice.html';
+import controller from './choice.controller';
 
 export default {
   controller,

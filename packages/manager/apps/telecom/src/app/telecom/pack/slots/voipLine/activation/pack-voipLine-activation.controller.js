@@ -1,13 +1,13 @@
 import find from 'lodash/find';
 import head from 'lodash/head';
 import isArray from 'lodash/isArray';
+import isEqual from 'lodash/isEqual';
 import map from 'lodash/map';
 import remove from 'lodash/remove';
 import orderBy from 'lodash/orderBy';
 import set from 'lodash/set';
 import sum from 'lodash/sum';
-
-import { removeDuplicateAddress } from './pack-voipLine-activation.service';
+import uniqWith from 'lodash/uniqWith';
 
 import { TELECOM_VOIP_ACTIVATION } from './pack-voipLine-activation.constant';
 
@@ -100,7 +100,8 @@ export default class PackVoipLineActivationCtrl {
 
       this.buildSlotCount(this.modem.availableSlots.available);
 
-      this.shippingAddresses = removeDuplicateAddress(data[2]);
+      // Remove duplicate addresses
+      this.shippingAddresses = uniqWith(data[2], isEqual);
     }, this.TucToastError);
   }
 

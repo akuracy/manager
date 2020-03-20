@@ -1,7 +1,7 @@
 import forEach from 'lodash/forEach';
 import sumBy from 'lodash/sumBy';
 
-import filterContact from './telephony-line-phone-accessories-shipping.service';
+import filterContact from './accessories-shipping.service';
 
 export default class TelecomTelephonyLinePhoneAccessoriesShippingCtrl {
   /* @ngInject */

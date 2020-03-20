@@ -5,7 +5,7 @@ import uiRouter from '@uirouter/angularjs';
 import angularTranslate from 'angular-translate';
 import 'ovh-ui-angular';
 
-import rma from './telephony-line-phone-order-rma.component';
+import rma from './rma.component';
 
 const moduleName = 'ovhTelecomLinePhoneOrderRma';
 
@@ -16,6 +16,6 @@ angular
     angularTranslate,
     'oui',
   ])
-  .component('linePhoneOrderRma', rma);
+  .component('rma', rma);
 
 export default moduleName;

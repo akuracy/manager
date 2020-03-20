@@ -86,12 +86,12 @@
                     class="widget-presentation"
                     data-ng-if="$ctrl.rmas.length"
                 >
-                    <line-phone-order-rma
+                    <rma
                         rmas="$ctrl.rmas"
                         order="$ctrl.order"
                         return-success="$ctrl.returnSuccess"
                     >
-                    </line-phone-order-rma>
+                    </rma>
                 </section>
 
                 <!-- PHONE SELECTION -->
@@ -99,14 +99,14 @@
                     class="widget-presentation"
                     data-ng-if="$ctrl.orderStep === 'hardware' && !$ctrl.rmas.length && !$ctrl.order.success"
                 >
-                    <line-phone-order-choice
+                    <choice
                         billing-account="$ctrl.billingAccount"
                         service-name="$ctrl.serviceName"
                         is-step-loading="$ctrl.isStepLoading"
                         line="$ctrl.line"
                         phone="$ctrl.phone"
                     >
-                    </line-phone-order-choice>
+                    </choice>
                 </section>
 
                 <!-- SHIPPING -->
@@ -114,10 +114,10 @@
                     class="widget-presentation"
                     data-ng-if="$ctrl.orderStep === 'shipping'"
                 >
-                    <line-phone-order-shipping
+                    <shipping
                         order="$ctrl.order"
                         is-step-loading="$ctrl.isStepLoading"
-                    ></line-phone-order-shipping>
+                    ></shipping>
                 </section>
 
                 <!-- PHONE RETURN -->
@@ -177,11 +177,11 @@
                     class="widget-presentation"
                     data-ng-if="$ctrl.orderStep === 'summary'"
                 >
-                    <line-phone-order-summary
+                    <summary
                         order="$ctrl.order"
                         is-step-loading="$ctrl.isStepLoading"
                     >
-                    </line-phone-order-summary>
+                    </summary>
                 </section>
             </div>
         </div>

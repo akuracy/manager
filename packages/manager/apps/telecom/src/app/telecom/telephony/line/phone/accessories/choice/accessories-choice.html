@@ -10,18 +10,14 @@
         ></h2>
 
         <!-- LOADING ERROR -->
-        <div
-            class="alert alert-danger"
-            role="alert"
-            data-ng-if="$ctrl.error.loading"
-        >
+        <oui-message type="error" data-ng-if="$ctrl.error.loading">
             <p>
                 <span
                     data-translate="telephony_line_phone_accessories_choice_load_error"
                 ></span>
                 <span data-ng-bind="$ctrl.error.loading.data.message"></span>
             </p>
-        </div>
+        </oui-message>
 
         <form data-ng-if="!$ctrl.error.loading">
             <!-- 5 same accessories max -->

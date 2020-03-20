@@ -2,8 +2,8 @@ import angular from 'angular';
 
 import billingAccount from './billingAccount';
 import carrierSip from './carrierSip';
-import linePhoneOrder from './line/phone/order/telephony-line-phone-order.module';
-import linePhoneAccessories from './line/phone/accessories/telephony-line-phone-accessories.module';
+import linePhoneOrder from './line/phone/order/order.module';
+import linePhoneAccessories from './line/phone/accessories/accessories.module';
 
 import component from './telephony.component';
 import routing from './telephony.routing';

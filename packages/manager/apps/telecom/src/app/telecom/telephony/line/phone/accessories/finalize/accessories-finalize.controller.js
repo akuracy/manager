@@ -13,14 +13,6 @@ export default class TelecomTelephonyLinePhoneAccessoriesFinalizeCtrl {
       init: false,
     };
 
-    this.init();
-  }
-
-  /*= =====================================
-    =            INITIALIZATION            =
-    ====================================== */
-
-  init() {
     this.loading.init = true;
     this.process = this.TucTelephonyAccessoriesOrderProcess.getOrderProcess();
 
@@ -38,6 +30,4 @@ export default class TelecomTelephonyLinePhoneAccessoriesFinalizeCtrl {
         this.loading.init = false;
       });
   }
-
-  /* -----  End of INITIALIZATION  ------*/
 }

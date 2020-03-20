@@ -5,7 +5,7 @@ import uiRouter from '@uirouter/angularjs';
 import angularTranslate from 'angular-translate';
 import 'ovh-ui-angular';
 
-import choice from './telephony-line-phone-order-choice.component';
+import choice from './choice.component';
 
 const moduleName = 'ovhTelecomLinePhoneOrderChoice';
 
@@ -16,6 +16,6 @@ angular
     angularTranslate,
     'oui',
   ])
-  .component('linePhoneOrderChoice', choice);
+  .component('choice', choice);
 
 export default moduleName;

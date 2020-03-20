@@ -5,7 +5,7 @@ import uiRouter from '@uirouter/angularjs';
 import angularTranslate from 'angular-translate';
 import 'ovh-ui-angular';
 
-import summary from './telephony-line-phone-order-summary.component';
+import summary from './summary.component';
 
 const moduleName = 'ovhTelecomLinePhoneOrderSummary';
 
@@ -16,6 +16,6 @@ angular
     angularTranslate,
     'oui',
   ])
-  .component('linePhoneOrderSummary', summary);
+  .component('summary', summary);
 
 export default moduleName;

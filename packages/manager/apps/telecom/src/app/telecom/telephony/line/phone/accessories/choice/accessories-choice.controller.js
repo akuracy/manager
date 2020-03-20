@@ -2,9 +2,9 @@ import chunk from 'lodash/chunk';
 import orderBy from 'lodash/orderBy';
 import some from 'lodash/some';
 
-import initializeBrandList from './telephony-line-phone-accessories-choice.service';
+import initializeBrandList from './accessories-choice.service';
 
-import { MAX_QUANTITY } from './telephony-line-phone-accessories-choice.constant';
+import { MAX_QUANTITY } from './accessories-choice.constant';
 
 export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
   /* @ngInject */
@@ -31,13 +31,13 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
 
     this.spinnerExtremities = {
       min: 0,
-      max: 5,
+      max: MAX_QUANTITY,
     };
 
-    this.init();
+    this.getAccesories();
   }
 
-  init() {
+  getAccesories() {
     this.loading.init = true;
 
     return this.TucTelephonyAccessoriesOrderProcess.getAvailableAccessories()
@@ -152,7 +152,7 @@ export default class TelecomTelephonyLinePhoneAccessoriesChoiceCtrl {
     // Force reinit for the accessories list
     this.process.accessoriesList = null;
 
-    this.init();
+    this.getAccesories();
   }
 
   selectAccessory() {

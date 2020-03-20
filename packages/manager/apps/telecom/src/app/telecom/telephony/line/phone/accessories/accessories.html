@@ -18,21 +18,19 @@
 
     <div data-ng-if="!$ctrl.loading.init" class="telecom-section-content">
         <div data-ng-if="$ctrl.process.currentView === 'choice'">
-            <telephony-line-phone-accessories-choice
-                phone="$ctrl.phone"
-            ></telephony-line-phone-accessories-choice>
+            <accessories-choice phone="$ctrl.phone"></accessories-choice>
         </div>
 
         <div data-ng-if="$ctrl.process.currentView === 'shipping'">
-            <telephony-line-phone-accessories-shipping></telephony-line-phone-accessories-shipping>
+            <accessories-shipping></accessories-shipping>
         </div>
 
         <div data-ng-if="$ctrl.process.currentView === 'resume'">
-            <telephony-line-phone-accessories-resume></telephony-line-phone-accessories-resume>
+            <accessories-resume></accessories-resume>
         </div>
 
         <div data-ng-if="$ctrl.process.currentView === 'finalize'">
-            <telephony-line-phone-accessories-finalize></telephony-line-phone-accessories-finalize>
+            <accessories-finalize></accessories-finalize>
         </div>
     </div>
 </section>

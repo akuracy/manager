@@ -1,7 +1,7 @@
 import assign from 'lodash/assign';
 import get from 'lodash/get';
 
-import filterContact from './telephony-line-phone-order.service';
+import filterContact from './order.service';
 
 export default class TelecomTelephonyLinePhoneOrderCtrl {
   /* @ngInject */

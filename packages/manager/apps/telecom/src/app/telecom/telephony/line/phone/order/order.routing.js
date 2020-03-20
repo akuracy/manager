@@ -2,8 +2,7 @@ export default /* @ngInject */ ($stateProvider) => {
   $stateProvider.state('telecom.telephony.billingAccount.line.phone.order', {
     url: '/order',
     views: {
-      'lineView@telecom.telephony.billingAccount.line':
-        'telephonyLinePhoneOrder',
+      'lineView@telecom.telephony.billingAccount.line': 'order',
     },
     resolve: {
       billingAccount: /* @ngInject */ ($transition$) =>

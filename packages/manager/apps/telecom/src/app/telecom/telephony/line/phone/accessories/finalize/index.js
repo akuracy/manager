@@ -5,7 +5,7 @@ import uiRouter from '@uirouter/angularjs';
 import angularTranslate from 'angular-translate';
 import 'ovh-ui-angular';
 
-import finalize from './telephony-line-phone-accessories-finalize.component';
+import finalize from './accessories-finalize.component';
 
 const moduleName = 'ovhTelecomLinePhoneAccessoriesFinalize';
 
@@ -16,6 +16,6 @@ angular
     angularTranslate,
     'oui',
   ])
-  .component('telephonyLinePhoneAccessoriesFinalize', finalize);
+  .component('accessoriesFinalize', finalize);
 
 export default moduleName;

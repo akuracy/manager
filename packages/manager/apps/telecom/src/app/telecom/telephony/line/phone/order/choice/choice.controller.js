@@ -7,8 +7,8 @@ import orderBy from 'lodash/orderBy';
 import set from 'lodash/set';
 import upperFirst from 'lodash/upperFirst';
 
-import { TELEPHONY_LINE_PHONE_CHOICE } from './telephony-line-phone-order-choice.constant';
-import initializeBrandList from './telephony-line-phone-order-choice.service';
+import { TELEPHONY_LINE_PHONE_CHOICE } from './choice.constant';
+import initializeBrandList from './choice.service';
 
 export default class TelephonyLinePhoneOrderChoiceCtrl {
   /* @ngInject */

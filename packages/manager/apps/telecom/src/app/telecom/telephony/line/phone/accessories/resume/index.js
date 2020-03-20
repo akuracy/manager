@@ -5,7 +5,7 @@ import uiRouter from '@uirouter/angularjs';
 import angularTranslate from 'angular-translate';
 import 'ovh-ui-angular';
 
-import resume from './telephony-line-phone-accessories-resume.component';
+import resume from './accessories-resume.component';
 
 const moduleName = 'ovhTelecomLinePhoneAccessoriesResume';
 
@@ -16,6 +16,6 @@ angular
     angularTranslate,
     'oui',
   ])
-  .component('telephonyLinePhoneAccessoriesResume', resume);
+  .component('accessoriesResume', resume);
 
 export default moduleName;
