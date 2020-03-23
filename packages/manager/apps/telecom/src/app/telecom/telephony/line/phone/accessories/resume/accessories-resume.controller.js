@@ -24,23 +24,21 @@ export default class TelecomTelephonyLinePhoneAccessoriesResumeCtrl {
     this.process = this.TucTelephonyAccessoriesOrderProcess.getOrderProcess();
 
     return this.TucTelephonyAccessoriesOrderProcess.getOrderCheckout()
-      .then(
-        (order) => {
-          remove(
-            order.details,
-            (detail) =>
-              ['SPECIAL', 'MUTE'].includes(detail.detailType) ||
-              (isEqual(detail.detailType, 'DELIVERY') &&
-                detail.totalPrice.value === 0),
-          );
+      .then((order) => {
+        remove(
+          order.details,
+          (detail) =>
+            ['SPECIAL', 'MUTE'].includes(detail.detailType) ||
+            (isEqual(detail.detailType, 'DELIVERY') &&
+              detail.totalPrice.value === 0),
+        );
 
-          this.order = order;
-        },
-        (error) => {
-          this.error = error;
-          return this.$q.reject(error);
-        },
-      )
+        this.order = order;
+      })
+      .catch((error) => {
+        this.error = error;
+        return this.$q.reject(error);
+      })
       .finally(() => {
         this.loading.init = false;
       });
