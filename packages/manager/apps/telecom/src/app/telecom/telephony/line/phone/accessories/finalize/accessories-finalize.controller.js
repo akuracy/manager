@@ -17,15 +17,13 @@ export default class TelecomTelephonyLinePhoneAccessoriesFinalizeCtrl {
     this.process = this.TucTelephonyAccessoriesOrderProcess.getOrderProcess();
 
     return this.TucTelephonyAccessoriesOrderProcess.orderCheckout()
-      .then(
-        (order) => {
-          this.order = order;
-        },
-        (error) => {
-          this.error = error;
-          return this.$q.reject(error);
-        },
-      )
+      .then((order) => {
+        this.order = order;
+      })
+      .catch((error) => {
+        this.error = error;
+        return this.$q.reject(error);
+      })
       .finally(() => {
         this.loading.init = false;
       });
