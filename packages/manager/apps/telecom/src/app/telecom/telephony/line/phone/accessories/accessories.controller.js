@@ -28,7 +28,7 @@ export default class TelephonyLinePhoneAccessoriesCtrl {
     this.line = null;
 
     this.loading.init = true;
-    this.TelephonyMediator.getGroup(this.billingAccount)
+    return this.TelephonyMediator.getGroup(this.billingAccount)
       .then((group) => {
         this.process = this.TucTelephonyAccessoriesOrderProcess.init(
           this.billingAccount,

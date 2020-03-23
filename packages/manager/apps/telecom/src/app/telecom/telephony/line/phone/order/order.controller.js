@@ -115,7 +115,7 @@ export default class TelecomTelephonyLinePhoneOrderCtrl {
           params.mondialRelayId = this.order.shipping.relay.id;
         }
         this.isFetchingOrder = true;
-        this.OvhApiOrder.Telephony()
+        return this.OvhApiOrder.Telephony()
           .v6()
           .getHardware(params)
           .$promise.then((result) => {
@@ -127,6 +127,7 @@ export default class TelecomTelephonyLinePhoneOrderCtrl {
             this.isFetchingOrder = false;
           });
       }
+      return null;
     });
 
     /* Event to go to shipping view */

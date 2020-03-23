@@ -29,9 +29,12 @@ export default class TelecomTelephonyLinePhoneAccessoriesShippingCtrl {
     // shipping mode selection options
     this.shippingOptions.disableMondialRelay =
       this.getTotalAccessoriesQuantity() > 1;
+    this.contactChoiceOptions = {
+      filter: filterContact,
+    };
 
     // contact options
-    this.contactDeferred.promise.then(() =>
+    return this.contactDeferred.promise.then(() =>
       this.TucTelephonyAccessoriesOrderProcess.getOrderCheckout()
         .then((order) => {
           shippingPrice = sumBy(order.details, (detail) => {
@@ -46,9 +49,6 @@ export default class TelecomTelephonyLinePhoneAccessoriesShippingCtrl {
           this.loading.init = false;
         }),
     );
-    this.contactChoiceOptions = {
-      filter: filterContact,
-    };
   }
 
   getTotalAccessoriesQuantity() {

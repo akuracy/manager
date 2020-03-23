@@ -35,7 +35,7 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
 
     this.isStepLoading = true;
     if (this.phone) {
-      this.fetchMerchandiseAvailable()
+      return this.fetchMerchandiseAvailable()
         .then((result) => {
           map(result, (phone) => {
             angular.extend(phone, {
@@ -56,17 +56,16 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
           this.brandList = initializeBrandList(this.merchandise);
           this.isStepLoading = false;
         });
-    } else {
-      this.fetchOfferPhones(this.line.getPublicOffer.name)
-        .then((offers) => {
-          this.phoneOffers = offers;
-          this.brandList = initializeBrandList(offers);
-          this.updatePhones();
-        })
-        .finally(() => {
-          this.isStepLoading = false;
-        });
     }
+    return this.fetchOfferPhones(this.line.getPublicOffer.name)
+      .then((offers) => {
+        this.phoneOffers = offers;
+        this.brandList = initializeBrandList(offers);
+        this.phonesDisplayed = this.updatePhones();
+      })
+      .finally(() => {
+        this.isStepLoading = false;
+      });
   }
 
   fetchOfferPhones(offer) {
@@ -131,7 +130,7 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
 
   updatePhones() {
     const phones = this.phoneOffers;
-    this.$q.all(
+    return this.$q.all(
       map(phones, (phone) => {
         const params = {
           hardware: phone.brand,
@@ -169,7 +168,6 @@ export default class TelephonyLinePhoneOrderChoiceCtrl {
           });
       }),
     );
-    this.phonesDisplayed = phones;
   }
 
   selectPhone() {
