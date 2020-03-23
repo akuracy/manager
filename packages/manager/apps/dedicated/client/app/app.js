@@ -38,6 +38,7 @@ import ovhPaymentMethod from '@ovh-ux/ng-ovh-payment-method';
 import uiRouter, { RejectType } from '@uirouter/angularjs';
 
 import moduleExchange from '@ovh-ux/manager-exchange';
+import ovhManagerCda from '@ovh-ux/manager-cda';
 import ovhManagerVeeamEnterprise from '@ovh-ux/manager-veeam-enterprise';
 import ovhManagerVeeamCloudConnect from '@ovh-ux/manager-veeam-cloud-connect';
 import ovhManagerVps from '@ovh-ux/manager-vps';
@@ -122,6 +123,7 @@ angular
       ovhManagerSupport,
       ovhManagerVeeamEnterprise,
       ovhManagerVeeamCloudConnect,
+      ovhManagerCda,
       ngTailLogs,
       ovhContacts,
       ovhManagerBanner,
