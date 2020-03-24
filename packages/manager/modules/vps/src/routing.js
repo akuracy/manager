@@ -8,6 +8,8 @@ import {
   PRODUCT_NAME,
 } from './constants';
 
+import { DASHBOARD_FEATURES } from './dashboard/vps-dashboard.constants';
+
 import detailComponent from './detail/vps-detail.component';
 import headerComponent from './header/vps-header.component';
 
@@ -31,11 +33,22 @@ export default /* @ngInject */ ($stateProvider) => {
       resolve: {
         connectedUser: /* @ngInject */ (OvhApiMe) =>
           OvhApiMe.v6().get().$promise,
-        capabilities: /* @ngInject */ (serviceName, OvhApiVpsCapabilities) =>
+        capabilities: /* @ngInject */ (
+          coreConfig,
+          isVpsNewRange,
+          serviceName,
+          OvhApiVpsCapabilities,
+        ) =>
           OvhApiVpsCapabilities.Aapi()
             .query({ serviceName })
             .$promise.then((capabilities) =>
-              capabilities.map((capability) => kebabCase(capability)),
+              capabilities
+                .filter((capability) =>
+                  !isVpsNewRange && coreConfig.isRegion('US')
+                    ? capability === DASHBOARD_FEATURES.rebuild
+                    : true,
+                )
+                .map((capability) => kebabCase(capability)),
             ),
         hasCloudDatabaseFeature: /* @ngInject */ (
           CucFeatureAvailabilityService,
