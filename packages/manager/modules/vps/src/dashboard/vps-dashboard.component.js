@@ -17,6 +17,7 @@ export default {
     goToSnapshotRestore: '<',
     goToTerminateOption: '<',
 
+    isVpsNewRange: '<',
     plan: '<',
     serviceName: '<',
     stateVps: '<',

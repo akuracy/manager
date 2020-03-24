@@ -2,7 +2,11 @@ import kebabCase from 'lodash/kebabCase';
 
 import template from './vps.html';
 
-import { FEATURE_CLOUDDATABASE, PRODUCT_NAME } from './constants';
+import {
+  FEATURE_CLOUDDATABASE,
+  NEW_RANGE_VERSION,
+  PRODUCT_NAME,
+} from './constants';
 
 import detailComponent from './detail/vps-detail.component';
 import headerComponent from './header/vps-header.component';
@@ -40,6 +44,8 @@ export default /* @ngInject */ ($stateProvider) => {
             PRODUCT_NAME,
             FEATURE_CLOUDDATABASE,
           ),
+        isVpsNewRange: /* @ngInject */ (stateVps) =>
+          stateVps.model.version === NEW_RANGE_VERSION,
         plan: /* @ngInject */ (serviceName, VpsService) =>
           VpsService.getServiceInfos(serviceName).then((plan) => ({
             ...plan,

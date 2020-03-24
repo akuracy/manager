@@ -32,6 +32,8 @@ export const IP_URL = {
   US: '#/configuration/ip?landingTo=ip&serviceName={serviceName}',
 };
 
+export const NEW_RANGE_VERSION = '2019v1';
+
 export const ORDER_EXPRESS_BASE_URL = {
   EU: {
     CZ: 'https://www.ovh.cz/order/express/#/new/express/resume',
@@ -83,6 +85,7 @@ export default {
   CONTACTS_URL,
   FEATURE_CLOUDDATABASE,
   IP_URL,
+  NEW_RANGE_VERSION,
   ORDER_EXPRESS_BASE_URL,
   PRIVATE_DATABASE_URL,
   PRODUCT_NAME,
