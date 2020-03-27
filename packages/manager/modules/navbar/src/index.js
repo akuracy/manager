@@ -15,6 +15,7 @@ import walkMe from './walk-me';
 import navbarComponent from './component';
 import service from './service';
 
+import 'oui4/dist/css/oui-icons.css';
 import './index.less';
 import './index.scss';
 

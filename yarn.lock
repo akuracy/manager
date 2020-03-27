@@ -12651,9 +12651,9 @@ osenv@0, osenv@^0.1.4, osenv@^0.1.5:
     os-tmpdir "^1.0.0"
 
 "oui4@npm:@ovh-ux/ui-kit":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@ovh-ux/ui-kit/-/ui-kit-4.0.4.tgz#cd4ea9f6fbc41c68dc90cfdb09ca9ebfce057a6d"
-  integrity sha512-Z0jvGnjcabragt91+BT6VlfvejDAiWRMejtFis0EmCUOEpNGGBQaGAptQ15NKJub7gjfd0RMVkrgL0XunuwORQ==
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@ovh-ux/ui-kit/-/ui-kit-4.0.5.tgz#f84be40e73f8cc7273bf412823f9e544b4f89967"
+  integrity sha512-hkiMGUsgXReOO6Sc+0L3x61O8/ry8CVvnR6KDqGJoa8LV2F21qBE4C/vgz6CLDnW1aE5NUrFkSK1NshsOQCxLQ==
 
 ovh-angular-list-view@ovh-ux/ovh-angular-list-view#^0.1.5:
   version "0.1.5"
